@@ -1,0 +1,118 @@
+/* ManageUsers.css */
+
+/* Container */
+.manage-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Form */
+.form-row {
+  display: flex;
+  gap: 1.5rem;          /* More space between inputs */
+  margin-bottom: 1.5rem;
+}
+
+.form-row input,
+.form-row select {
+  flex: 1;
+  padding: 16px;        /* Larger input boxes */
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-row input:focus,
+.form-row select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+}
+
+/* Add User Button */
+.add-user-button {
+  width: 220px;
+  padding: 16px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-user-button:hover {
+  background-color: #0056b3;
+}
+
+/* Tabs */
+.tab-container {
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 12px;
+}
+
+.tab-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  background-color: #007bff;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.tab-button.inactive {
+  background-color: #f0f0f0;
+  color: black;
+}
+
+/* Table */
+.manage-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.manage-table th {
+  padding: 14px;
+  border-bottom: 2px solid #ccc;
+  text-align: left;
+  font-weight: bold;
+  background-color: #f1f1f1;
+}
+
+.manage-table td {
+  padding: 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.manage-table tr:hover {
+  background-color: #f1f7ff;
+}
+
+/* Delete Button */
+.delete-button {
+  padding: 10px 14px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+  background-color: #b02a37;
+}
