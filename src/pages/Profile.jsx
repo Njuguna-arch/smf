@@ -8,7 +8,7 @@ const Profile = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const user = getCurrentUser();
@@ -38,19 +38,20 @@ const Profile = () => {
     return <p style={{ padding: "2rem" }}>Loading profile...</p>;
   }
 
+  // Always resolve to backend /uploads
   const photoSrc = student.photoUrl
-    ? student.photoUrl.startsWith("/uploads")
-      ? `${API_URL}${student.photoUrl}`
-      : `${API_URL}/uploads/${student.photoUrl}`
-    : "https://via.placeholder.com/180?text=No+Photo";
+    ? `${API_URL}/uploads/${student.photoUrl.replace(/^\/uploads\//, "")}`
+    : `${API_URL}/uploads/default-avatar.png`;
 
   return (
     <div style={{ padding: "2rem" }}>
       {/* Welcoming Header */}
       <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-        <marquee behavior="" direction="left" scrollamount="9"><h1 style={{ margin: 0, fontSize: "2rem", color: "#0a0a0b",backgroundColor:"#e8e113" }}>
-          Grather Academy Primary and Junior School, MOTTO: Hard Work Pays
-        </h1></marquee>
+        <marquee behavior="" direction="left" scrollamount="9">
+          <h1 style={{ margin: 0, fontSize: "2rem", color: "#0a0a0b", backgroundColor: "#e8e113" }}>
+            Grather Academy Primary and Junior School, MOTTO: Hard Work Pays
+          </h1>
+        </marquee>
         <h2 style={{ margin: "0.5rem 0", color: "#34495e" }}>
           Welcome, {student.name || "Student"}
         </h2>
@@ -76,21 +77,19 @@ const Profile = () => {
         >
           <h3>User Profile</h3>
           <img
-          src={photoSrc}
-          alt={student.name || "Student Photo"}
-          crossOrigin="anonymous"
-          style={{
-            width: "220px",
-            height: "220px",
-            objectFit: "cover",
-            border: "2px solid #ccc",
-            borderRadius: "12px",
-            marginBottom: "1rem",
-
+            src={photoSrc}
+            alt={student.name || "Student Photo"}
+            crossOrigin="anonymous"
+            style={{
+              width: "220px",
+              height: "220px",
+              objectFit: "cover",
+              border: "2px solid #ccc",
+              borderRadius: "12px",
+              marginBottom: "1rem",
             }}
             onError={(e) => {
-              e.currentTarget.src =
-                "https://via.placeholder.com/180?text=No+Photo";
+              e.currentTarget.src = `${API_URL}/uploads/default-avatar.png`;
             }}
           />
           <p>
@@ -109,30 +108,18 @@ const Profile = () => {
           }}
         >
           <h3>Personal Information</h3>
-          <p>
-            <strong>Name:</strong> {student.name || "N/A"}
-          </p>
-          <p>
-            <strong>Admission No:</strong> {student.admissionNumber || "N/A"}
-          </p>
-          <p>
-            <strong>Email:</strong> {student.email || "N/A"}
-          </p>
-          <p>
-            <strong>Grade:</strong> {student.grade || "N/A"}
-          </p>
-          <p>
-            <strong>Gender:</strong> {student.gender || "N/A"}
-          </p>
+          <p><strong>Name:</strong> {student.name || "N/A"}</p>
+          <p><strong>Admission No:</strong> {student.admissionNumber || "N/A"}</p>
+          <p><strong>Email:</strong> {student.email || "N/A"}</p>
+          <p><strong>Grade:</strong> {student.grade || "N/A"}</p>
+          <p><strong>Gender:</strong> {student.gender || "N/A"}</p>
           <p>
             <strong>Date of Birth:</strong>{" "}
             {student.dateOfBirth
               ? new Date(student.dateOfBirth).toLocaleDateString()
               : "N/A"}
           </p>
-          <p>
-            <strong>Class Teacher:</strong> {student.classTeacher || "N/A"}
-          </p>
+          <p><strong>Class Teacher:</strong> {student.classTeacher || "N/A"}</p>
         </div>
       </div>
     </div>

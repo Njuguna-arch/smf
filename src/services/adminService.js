@@ -24,6 +24,12 @@ export const deleteUser = async (id) => {
   return res.data;
 };
 
+// Assign photo to a user
+export const assignPhoto = async (id, photoFileName) => {
+  const res = await api.put(`/users/assign-photo/${id}`, { photoFileName });
+  return res.data;
+};
+
 // Announcements
 export const fetchAnnouncements = async () => {
   const res = await api.get("/admin/announcements");

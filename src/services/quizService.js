@@ -1,5 +1,6 @@
 import api from "./api";
 
+// Fetch active quizzes
 export const fetchQuizzes = async (grade, subject) => {
   try {
     const match = grade.replace(/\+/g, " ").match(/\d+/);
@@ -17,23 +18,25 @@ export const fetchQuizzes = async (grade, subject) => {
   }
 };
 
-export const submitQuiz = async ({ quizId, answers }) => {
+// Submit a single quiz (one question at a time)
+export const submitQuiz = async (quizId, selectedOption) => {
   try {
     const res = await api.post(
       "/quizzes/submit",
-      { quizId, answers },
+      { quizId, selectedOption },
       {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       }
     );
 
-    return res.data;
+    return res.data; // { score, total, answers: [...] }
   } catch (err) {
     console.error("Failed to submit quiz:", err.message);
     throw err;
   }
 };
 
+// Fetch subjects
 export const fetchSubjects = async () => {
   try {
     const res = await api.get("/quizzes/subjects", {
@@ -46,10 +49,7 @@ export const fetchSubjects = async () => {
   }
 };
 
-/**
- * Add a new quiz (MCQ or File-based).
- * If quizData is FormData, send as multipart/form-data.
- */
+// Add a new quiz (MCQ or File-based)
 export const addQuiz = async (quizData) => {
   try {
     const isFormData = quizData instanceof FormData;
@@ -68,9 +68,10 @@ export const addQuiz = async (quizData) => {
   }
 };
 
+// Fetch completed quizzes for a student
 export const fetchCompletedQuizzes = async (studentId) => {
   try {
-    const res = await api.get(`/students/${studentId}/completed-quizzes`, {
+    const res = await api.get(`/users/${studentId}/completed-quizzes`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     return res.data;

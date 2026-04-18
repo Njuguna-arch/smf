@@ -10,7 +10,7 @@ const StudentQuizzes = ({ studentId }) => {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.get(
-          `http://localhost:5000/api/teacher/${studentId}/completed-quizzes`,
+        `${import.meta.env.VITE_API_URL}/api/teacher/${studentId}/completed-quizzes`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setQuizzes(res.data);

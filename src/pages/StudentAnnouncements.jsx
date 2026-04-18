@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchAnnouncements } from "../services/adminService";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const StudentAnnouncements = () => {
   const [announcements, setAnnouncements] = useState([]);

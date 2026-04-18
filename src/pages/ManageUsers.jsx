@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { addUser, deleteUser, fetchUsers } from "../services/adminService";
-import "./ManageUsers.css";   // ✅ Import the CSS file
+import { addUser, deleteUser, fetchUsers, assignPhoto  } from "../services/adminService";
+import "./ManageUsers.css"; 
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
@@ -50,6 +50,11 @@ const ManageUsers = () => {
 
       const created = await addUser(payload);
       setUsers([...users, created]);
+
+      //Assign photo if provided
+      if (payload.photoUrl) {
+        await assignPhoto(created._id, payload.photoUrl);
+      }
 
       setNewUser({
         name: "",
@@ -208,7 +213,6 @@ const ManageUsers = () => {
               <th>Grade</th>
               <th>Gender</th>
               <th>Date of Birth</th>
-              <th>Class Teacher</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -246,6 +250,7 @@ const ManageUsers = () => {
               <th>Role</th>
               <th>Gender</th>
               <th>Date of Birth</th>
+              <th>Class Assigned</th> 
               <th>Actions</th>
             </tr>
           </thead>

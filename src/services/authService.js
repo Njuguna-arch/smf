@@ -1,6 +1,7 @@
 import api from "./api";
 
 export const login = async (identifier, password, role) => {
+  const endpoint = "/auth/login";
   let payload;
 
   if (role === "student") {
@@ -10,16 +11,17 @@ export const login = async (identifier, password, role) => {
   }
 
   try {
-    const res = await api.post("/auth/login", payload);
+    const res = await api.post(endpoint, payload);
 
+    // Clear old data
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
+    // Save new data
     if (res.data?.token) {
       localStorage.setItem("token", res.data.token);
     }
     if (res.data?.user) {
-      // Normalize role casing before saving
       const normalizedUser = {
         ...res.data.user,
         role: res.data.user.role?.toLowerCase(),

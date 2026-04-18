@@ -3,7 +3,7 @@ import axios from "axios";
 import { fetchStudentResults } from "../services/examService";
 import { getCurrentUser } from "../services/authService";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const gradeColor = (grade) => {
   switch (grade) {
@@ -74,7 +74,7 @@ const StudentExamResults = () => {
     loadResults();
   }, [user?.admissionNumber]);
 
-    const handleSearch = () => {
+  const handleSearch = () => {
     setAppliedExamType(selectedExamType);
     setAppliedTerm(selectedTerm);
     setAppliedYear(selectedYear);
@@ -93,39 +93,51 @@ const StudentExamResults = () => {
 
   const exam = filteredResults[0];
 
-      const handleDownloadPDF = async () => {
-        try {
-          const token = localStorage.getItem("token");
-          const url = `${API_URL}/api/exams/${exam.admissionNumber}/${exam.examType}/${exam.term}/${exam.year}/pdf`;
+  const handleDownloadPDF = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const url = `${API_URL}/api/debug/student-report`;
 
-          const response = await axios.get(url, {
-            responseType: "blob",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          const blob = new Blob([response.data], { type: "application/pdf" });
-          const link = document.createElement("a");
-          link.href = window.URL.createObjectURL(blob);
-          link.download = `${exam.examType}-${exam.term}-${exam.year}.pdf`;
-          link.click();
-        } catch (err) {
-          console.error("Failed to download PDF:", err);
-          alert("Could not download PDF. Please try again.");
+      const response = await axios.post(
+        url,
+        {
+          name: exam.studentId?.name || "Student",
+          admission: exam.admissionNumber,
+          examType: `${exam.examType} ${exam.term} ${exam.year}`,
+          grade: exam.overallGrade,
+          position: exam.position || "N/A",
+          subjects: exam.subjectResults.map((subj) => ({
+            name: subj.subjectName,
+            marks: subj.marks,
+            grade: subj.grade,
+            points: getPointsFromGrade(subj.grade),
+          })),
+          comment: exam.overallComment || "N/A",
+        },
+        {
+          responseType: "blob",
+          headers: { Authorization: `Bearer ${token}` },
         }
-      };
+      );
 
-    return (
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `${exam.examType}-${exam.term}-${exam.year}.pdf`;
+      link.click();
+    } catch (err) {
+      console.error("Failed to download PDF:", err);
+      alert("Could not download PDF. Please try again.");
+    }
+  };
+
+  return (
     <div style={{ padding: "2rem", backgroundColor: "#f9f9f9", borderRadius: "8px" }}>
+      {/* Filters */}
       <div style={{ display: "flex", justifyContent: "center", gap: "30px", marginBottom: "1rem" }}>
         <div>
           <label style={{ marginRight: "10px", fontWeight: "bold" }}>Exam Type:</label>
-          <select
-            value={selectedExamType}
-            onChange={(e) => setSelectedExamType(e.target.value)}
-            style={{ padding: "6px 12px", borderRadius: "4px", border: "1px solid #ccc" }}
-          >
+          <select value={selectedExamType} onChange={(e) => setSelectedExamType(e.target.value)}>
             <option value="Opener">Opener</option>
             <option value="Mid-Term">Mid-Term</option>
             <option value="End-Term">End-Term</option>
@@ -134,11 +146,7 @@ const StudentExamResults = () => {
 
         <div>
           <label style={{ marginRight: "10px", fontWeight: "bold" }}>Term:</label>
-          <select
-            value={selectedTerm}
-            onChange={(e) => setSelectedTerm(e.target.value)}
-            style={{ padding: "6px 12px", borderRadius: "4px", border: "1px solid #ccc" }}
-          >
+          <select value={selectedTerm} onChange={(e) => setSelectedTerm(e.target.value)}>
             <option value="Term 1">Term 1</option>
             <option value="Term 2">Term 2</option>
             <option value="Term 3">Term 3</option>
@@ -147,51 +155,29 @@ const StudentExamResults = () => {
 
         <div>
           <label style={{ marginRight: "10px", fontWeight: "bold" }}>Year:</label>
-          <select
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(Number(e.target.value))}
-            style={{ padding: "6px 12px", borderRadius: "4px", border: "1px solid #ccc" }}
-          >
+          <select value={selectedYear} onChange={(e) => setSelectedYear(Number(e.target.value))}>
             <option value={2025}>2025</option>
             <option value={2026}>2026</option>
             <option value={2027}>2027</option>
           </select>
         </div>
 
-        <div>
-          <button
-            onClick={handleSearch}
-            style={{
-              padding: "6px 16px",
-              backgroundColor: "#2196f3",
-              color: "#fff",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontWeight: "bold"
-            }}
-          >
-            Search
-          </button>
-        </div>
+        <button onClick={handleSearch}>Search</button>
       </div>
 
-      <h2 style={{ textAlign: "center", marginBottom: "0.5rem", color: "#2e7d32" }}>
+      {/* Student Info */}
+      <h2 style={{ textAlign: "center", color: "#2e7d32" }}>
         {exam.studentId?.name || "Student"}
       </h2>
-      <p style={{ textAlign: "center", marginBottom: "0.5rem", fontSize: "1.1rem" }}>
-        Admission Number: {exam.admissionNumber}
+      <p style={{ textAlign: "center" }}>Admission Number: {exam.admissionNumber}</p>
+      <p style={{ textAlign: "center", fontWeight: "bold" }}>
+        Overall Grade: <span style={{ color: gradeColor(exam.overallGrade) }}>{exam.overallGrade}</span>
       </p>
-      <p style={{ textAlign: "center", fontWeight: "bold", fontSize: "1.1rem" }}>
-        Overall Grade:{" "}
-        <span style={{ color: gradeColor(exam.overallGrade) }}>
-          {exam.overallGrade || "N/A"}
-        </span>
-      </p>
-      <p style={{ textAlign: "center", marginBottom: "1rem", fontSize: "1rem" }}>
+      <p style={{ textAlign: "center" }}>
         {exam.examType} — {exam.term} {exam.year}
       </p>
 
+      {/* Results Table */}
       <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "1rem" }}>
         <thead>
           <tr style={{ backgroundColor: "#f5f5f5" }}>
@@ -219,10 +205,11 @@ const StudentExamResults = () => {
       </table>
 
       {/* Teacher Comment */}
-      <div style={{ marginTop: "1rem", fontWeight: "bold", color: "#333", textAlign: "center" }}>
+      <div style={{ marginTop: "1rem", fontWeight: "bold", textAlign: "center" }}>
         Class Teacher's Comment: {exam.overallComment || "N/A"}
       </div>
 
+      {/* Download Button */}
       <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
         <button
           onClick={handleDownloadPDF}

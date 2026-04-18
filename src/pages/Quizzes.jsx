@@ -26,9 +26,9 @@ const Quizzes = () => {
   const [subjects, setSubjects] = useState([]);
   const [subject, setSubject] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [activeTab, setActiveTab] = useState("active");
 
+  // Load subjects on mount
   useEffect(() => {
     fetchSubjects()
       .then((data) => {
@@ -41,6 +41,7 @@ const Quizzes = () => {
       });
   }, []);
 
+  // Load quizzes and completed quizzes when subject changes
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user && subject) {
@@ -75,37 +76,35 @@ const Quizzes = () => {
     }
   };
 
-  const handleSelect = (questionId, option) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: option }));
+  const handleSelect = (quizId, optionText) => {
+    setAnswers((prev) => ({ ...prev, [quizId]: optionText }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (quizId) => {
     try {
-      const formattedAnswers = Object.keys(answers).map((id) => ({
-        questionId: id,
-        selectedOption: answers[id],
-      }));
-
-      if (formattedAnswers.length === 0) {
-        setError("Please select at least one answer before submitting.");
+      const selectedOption = answers[quizId];
+      if (!selectedOption) {
+        alert("Please select an option before submitting.");
         return;
       }
 
-      const quizId = quizzes[0]?._id;
-      const res = await submitQuiz({ quizId, answers: formattedAnswers });
+      // Use quizService submitQuiz (calls backend via api.js)
+      const res = await submitQuiz(quizId, selectedOption);
 
-      setResult(res);
-      setError("");
+      // Update result state with immediate feedback
+      setResult((prev) => ({
+        ...prev,
+        answers: [...(prev?.answers || []), ...res.answers],
+      }));
 
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (user) {
-        const normalizedGrade = user.grade.replace("Grade ", "");
-        await loadQuizzes(normalizedGrade, subject);
-        await loadCompletedQuizzes(user._id);
-      }
+      // Remove quiz from active list
+      setQuizzes((prev) => prev.filter((q) => q._id !== quizId));
+
+      // Push to completed list
+      setCompletedQuizzes((prev) => [...prev, res]);
     } catch (err) {
-      console.error("Quiz submission failed:", err);
-      setError("Failed to submit quiz. Please try again.");
+      console.error("Quiz submission failed:", err.message);
+      alert("Failed to submit quiz. Please try again.");
     }
   };
 
@@ -170,21 +169,28 @@ const Quizzes = () => {
                     📄 This quiz is file-based. Download and complete it:
                   </Typography>
                   <Button
-                    href={quiz.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={`${import.meta.env.VITE_API_URL}/api/quizzes/download/${quiz._id}`}
                     sx={{ mt: 1 }}
                   >
                     Download Quiz File
                   </Button>
                 </Paper>
               ) : (
-                <QuizCard
-                  key={quiz._id}
-                  quiz={quiz}
-                  selectedOption={answers[quiz._id]}
-                  onSelect={handleSelect}
-                />
+                <div key={quiz._id} style={{ marginBottom: "1rem" }}>
+                  <QuizCard
+                    quiz={quiz}
+                    answers={answers}
+                    onSelect={handleSelect}
+                    result={result}
+                  />
+                  <Button
+                    variant="contained"
+                    sx={{ mt: 1 }}
+                    onClick={() => handleSubmit(quiz._id)}
+                  >
+                    Submit
+                  </Button>
+                </div>
               )
             )
           ) : (
@@ -199,84 +205,87 @@ const Quizzes = () => {
               </Paper>
             )
           )}
-
-          {quizzes.length > 0 && quizzes.some((q) => q.type !== "file") && (
-            <Button variant="contained" sx={{ mt: 2 }} onClick={handleSubmit}>
-              Submit Quiz
-            </Button>
-          )}
         </>
       )}
 
       {activeTab === "completed" && (
         <Box>
           {completedQuizzes.length > 0 ? (
-            completedQuizzes.map((quiz) => (
-              <Paper
-                key={quiz._id}
-                sx={{
-                  p: 2,
-                  mb: 2,
-                  border: "1px solid #ccc",
-                  borderRadius: "8px",
-                  backgroundColor: "#f0f0f0",
-                }}
-              >
-                <Typography variant="h6">
-                  {quiz.subject} — Grade {quiz.grade}
-                </Typography>
-                {quiz.type === "file" ? (
-                  <Typography>
-                    📄 File-based quiz uploaded. You submitted your work.
+            completedQuizzes.map((quiz, idx) => {
+              const percentage =
+                quiz.total > 0
+                  ? Math.round((quiz.score / quiz.total) * 100)
+                  : 0;
+              return (
+                <Paper key={idx} sx={{ p: 2, mb: 2 }}>
+                  <Typography variant="h6">
+                    {quiz.subject} — Grade {quiz.grade}
                   </Typography>
-                ) : (
-                  <>
-                    <Typography>
-                      <strong>Question:</strong> {quiz.question}
+                  {quiz.answers?.map((ans, i) => (
+                    <Box
+                      key={i}
+                      sx={{
+                        mb: 2,
+                        p: 2,
+                        borderRadius: "8px",
+                        backgroundColor: ans.isCorrect ? "#d4edda" : "#f8d7da",
+                      }}
+                    >
+                      <Typography>
+                        <strong>Question:</strong> {ans.question}
+                      </Typography>
+                      <Typography>
+                        <strong>Your Answer:</strong> {ans.selectedOption}
+                      </Typography>
+                      {ans.isCorrect ? (
+                        <Typography color="success.main">✅ Correct</Typography>
+                      ) : (
+                        <>
+                          <Typography color="error.main">❌ Incorrect</Typography>
+                          <Typography color="primary">
+                            <strong>Correct Answer:</strong> {ans.correctAnswer}
+                          </Typography>
+                        </>
+                      )}
+                    </Box>
+                  ))}
+                  <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+                    <Typography sx={{ mr: 2 }}>
+                      <strong>Score:</strong> {quiz.score}/{quiz.total}
                     </Typography>
-                    <Typography color="success.main">Completed</Typography>
-                  </>
-                )}
-              </Paper>
-            ))
+                    <Box
+                      sx={{
+                        px: 2,
+                        py: 0.5,
+                        borderRadius: "12px",
+                        backgroundColor:
+                          percentage === 100
+                            ? "#28a745"
+                            : percentage >= 50
+                            ? "#ffc107"
+                            : "#dc3545",
+                        color: "#fff",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {percentage}%
+                    </Box>
+                  </Box>
+                </Paper>
+              );
+            })
           ) : (
             <Paper sx={{ mt: 2, p: 2, backgroundColor: "#fff3cd" }}>
               <Typography variant="h6" color="warning.main">
                 Keep going!
               </Typography>
               <Typography>
-                You haven’t completed any quizzes yet. Try an active quiz to get started!
+                You haven’t completed any quizzes yet. Try an active quiz to get
+                started!
               </Typography>
             </Paper>
           )}
         </Box>
-      )}
-
-      {result && activeTab === "active" && (
-        <Paper
-          sx={{
-            mt: 2,
-            p: 2,
-            borderRadius: "12px",
-            backgroundColor:
-              result.score === result.total
-                ? "#d4edda"
-                : result.score >= result.total / 2
-                ? "#fff3cd"
-                : "#f8d7da",
-          }}
-        >
-          <Typography variant="h6">
-            📝 Your Score: {result.score}/{result.total}
-          </Typography>
-          <Typography sx={{ mt: 1 }}>
-            {result.score === result.total
-              ? "🌟 Excellent! You got everything right!"
-              : result.score >= result.total / 2
-              ? "😊 Good job! Keep practicing!"
-              : "😅 Oops! Try again and you'll improve!"}
-          </Typography>
-        </Paper>
       )}
     </Paper>
   );
