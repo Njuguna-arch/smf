@@ -213,6 +213,7 @@ const ManageUsers = () => {
               <th>Grade</th>
               <th>Gender</th>
               <th>Date of Birth</th>
+              <th>Class Teacher</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -249,8 +250,7 @@ const ManageUsers = () => {
               <th>Email</th>
               <th>Role</th>
               <th>Gender</th>
-              <th>Date of Birth</th>
-              <th>Class Assigned</th> 
+              <th>Date of Birth</th> 
               <th>Actions</th>
             </tr>
           </thead>

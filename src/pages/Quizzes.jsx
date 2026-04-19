@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
   fetchQuizzes,
@@ -108,6 +109,33 @@ const Quizzes = () => {
     }
   };
 
+  const handleDownload = async (quiz) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/quizzes/download/${quiz._id}`,
+        {
+          responseType: "blob",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      // Extract extension from fileUrl (pdf/doc/docx)
+      const extension = quiz.fileUrl.split(".").pop();
+      const filename = `${quiz.subject}-Grade${quiz.grade}-Quiz.${extension}`;
+
+      // Create a download link
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+    } catch (err) {
+      alert("Download failed");
+    }
+  };
+
   return (
     <Paper sx={{ p: 3, maxWidth: 1100, mx: "auto" }}>
       <Typography variant="h5" gutterBottom>
@@ -168,12 +196,12 @@ const Quizzes = () => {
                   <Typography>
                     📄 This quiz is file-based. Download and complete it:
                   </Typography>
-                  <Button
-                    href={`${import.meta.env.VITE_API_URL}/api/quizzes/download/${quiz._id}`}
-                    sx={{ mt: 1 }}
-                  >
-                    Download Quiz File
-                  </Button>
+                    <Button
+                      onClick={() => handleDownload(quiz)}
+                      sx={{ mt: 1 }}
+                    >
+                      Download Quiz File
+                    </Button>
                 </Paper>
               ) : (
                 <div key={quiz._id} style={{ marginBottom: "1rem" }}>
