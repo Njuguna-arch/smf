@@ -116,21 +116,15 @@ const handleDownload = (quiz) => {
       return;
     }
 
-const extension = quiz.fileUrl.split(".").pop().toLowerCase();
-const filename = `${quiz.subject}-Grade${quiz.grade}-Quiz.${extension}`;
+    const extension = quiz.fileUrl.split(".").pop().toLowerCase();
+    const filename = `${quiz.subject}-Grade${quiz.grade}-Quiz.${extension}`;
 
-    if (extension === "pdf") {
-      // Open PDFs inline in a new tab
-      window.open(quiz.fileUrl, "_blank");
-    } else {
-      // Force download for Word files (doc/docx)
-      const link = document.createElement("a");
-      link.href = quiz.fileUrl;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+    const link = document.createElement("a");
+    link.href = quiz.fileUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   } catch (err) {
     console.error("Download error:", err);
     alert("Download failed. Please try again.");
