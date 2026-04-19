@@ -109,32 +109,33 @@ const Quizzes = () => {
     }
   };
 
-  const handleDownload = async (quiz) => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/quizzes/download/${quiz._id}`,
-        {
-          responseType: "blob",
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+const handleDownload = (quiz) => {
+  try {
+    if (!quiz.fileUrl) {
+      alert("No file available for this quiz.");
+      return;
+    }
 
-      // Extract extension from fileUrl (pdf/doc/docx)
-      const extension = quiz.fileUrl.split(".").pop();
-      const filename = `${quiz.subject}-Grade${quiz.grade}-Quiz.${extension}`;
+const extension = quiz.fileUrl.split(".").pop().toLowerCase();
+const filename = `${quiz.subject}-Grade${quiz.grade}-Quiz.${extension}`;
 
-      // Create a download link
-      const url = window.URL.createObjectURL(new Blob([res.data]));
+    if (extension === "pdf") {
+      // Open PDFs inline in a new tab
+      window.open(quiz.fileUrl, "_blank");
+    } else {
+      // Force download for Word files (doc/docx)
       const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", filename);
+      link.href = quiz.fileUrl;
+      link.download = filename;
       document.body.appendChild(link);
       link.click();
-    } catch (err) {
-      alert("Download failed");
+      document.body.removeChild(link);
     }
-  };
+  } catch (err) {
+    console.error("Download error:", err);
+    alert("Download failed. Please try again.");
+  }
+};
 
   return (
     <Paper sx={{ p: 3, maxWidth: 1100, mx: "auto" }}>
