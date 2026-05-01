@@ -49,7 +49,7 @@ const Profile = () => {
       <div style={{ textAlign: "center", marginBottom: "2rem" }}>
         <marquee behavior="" direction="left" scrollamount="9">
           <h1 style={{ margin: 0, fontSize: "2rem", color: "#0a0a0b", backgroundColor: "#e8e113" }}>
-            Grather Academy Primary and Junior School, MOTTO: Hard Work Pays
+            Liskan Academy Primary and Junior School, MOTTO: Hard Work Pays                                            
           </h1>
         </marquee>
         <h2 style={{ margin: "0.5rem 0", color: "#34495e" }}>

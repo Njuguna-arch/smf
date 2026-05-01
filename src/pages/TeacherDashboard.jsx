@@ -81,7 +81,7 @@ const TeacherDashboard = () => {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom color="primary">
-        Grather Academy — Teacher Dashboard
+        Liskan Academy — Teacher Dashboard
       </Typography>
 
       <Paper elevation={3} sx={{ p: 2 }}>
