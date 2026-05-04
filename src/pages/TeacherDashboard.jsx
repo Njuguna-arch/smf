@@ -14,7 +14,6 @@ import {
   MenuItem,
 } from "@mui/material";
 
-// 🔹 Helper: map grade → points
 const getPointsFromGrade = (grade) => {
   switch (grade) {
     case "EE1": return 8;
@@ -29,7 +28,6 @@ const getPointsFromGrade = (grade) => {
   }
 };
 
-// 🔹 Helper: compute grade from marks
 const getCBEGrade = (marks) => {
   if (marks >= 90) return "EE1";
   if (marks >= 75) return "EE2";
@@ -48,7 +46,7 @@ const TeacherDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // 🔹 Filters
+  //Filters
   const [examType, setExamType] = useState("Mid-Term");
   const [term, setTerm] = useState("Term 1");
   const [year, setYear] = useState(2026);
@@ -74,7 +72,7 @@ const TeacherDashboard = () => {
     loadPerformance(examType, term, year);
   }, [examType, term, year]);
 
-  // 🔹 Compute grade + points for class mean
+  // Compute grade + points for class mean
   const meanGrade = getCBEGrade(meanScore);
   const meanPoints = getPointsFromGrade(meanGrade);
 
@@ -89,7 +87,6 @@ const TeacherDashboard = () => {
           Class Performance
         </Typography>
 
-        {/* 🔹 Filters */}
         <Box sx={{ mb: 2, display: "flex", gap: 3 }}>
           <Box>
             <Typography variant="body1" sx={{ fontWeight: "bold" }}>
@@ -150,7 +147,7 @@ const TeacherDashboard = () => {
                 <TableCell><strong>Subject</strong></TableCell>
                 <TableCell><strong>Average Score</strong></TableCell>
                 <TableCell><strong>Grade</strong></TableCell>
-                <TableCell><strong>Points</strong></TableCell>
+                <TableCell><strong>Lubrics</strong></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

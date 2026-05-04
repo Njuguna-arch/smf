@@ -18,7 +18,7 @@ export const fetchQuizzes = async (grade, subject) => {
   }
 };
 
-// Submit a single quiz (one question at a time)
+// Submit a single quiz 
 export const submitQuiz = async (quizId, selectedOption) => {
   try {
     const res = await api.post(
@@ -29,7 +29,7 @@ export const submitQuiz = async (quizId, selectedOption) => {
       }
     );
 
-    return res.data; // { score, total, answers: [...] }
+    return res.data; 
   } catch (err) {
     console.error("Failed to submit quiz:", err.message);
     throw err;
@@ -49,7 +49,7 @@ export const fetchSubjects = async () => {
   }
 };
 
-// Add a new quiz (MCQ or File-based)
+// Add a new quiz
 export const addQuiz = async (quizData) => {
   try {
     const isFormData = quizData instanceof FormData;

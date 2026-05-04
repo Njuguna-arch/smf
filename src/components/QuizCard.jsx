@@ -40,7 +40,7 @@ const QuizCard = ({ quiz, answers, onSelect, result }) => {
                 value={option}
                 checked={selected}
                 onChange={() => onSelect(quiz._id, option)}
-                disabled={!!feedback} // lock after submission
+                disabled={!!feedback}
               />
               {option}
             </label>

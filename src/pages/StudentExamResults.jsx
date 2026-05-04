@@ -184,7 +184,7 @@ const StudentExamResults = () => {
             <th style={thStyle}>Subject</th>
             <th style={thStyle}>Marks</th>
             <th style={thStyle}>Grade</th>
-            <th style={thStyle}>Points</th>
+            <th style={thStyle}>Lubrics</th>
           </tr>
         </thead>
         <tbody>

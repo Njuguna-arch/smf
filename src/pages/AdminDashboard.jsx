@@ -5,7 +5,7 @@ import {
   PieChart, Pie, Cell
 } from "recharts";
 
-// 🔹 Helper: map grade → points
+//Helper: map grade → points
 const getPointsFromGrade = (grade) => {
   switch (grade) {
     case "EE1": return 8;
@@ -20,7 +20,7 @@ const getPointsFromGrade = (grade) => {
   }
 };
 
-// 🔹 Helper: compute grade from marks
+//Helper: compute grade from marks
 const getCBEGrade = (marks) => {
   if (marks >= 90) return "EE1";
   if (marks >= 75) return "EE2";
@@ -53,7 +53,7 @@ const AdminDashboard = () => {
 
   const colors = ["#1565c0", "#2e7d32", "#f57c00", "#6a1b9a", "#d32f2f"];
 
-  // 🔹 Compute grade + points for class mean
+  //Compute grade + points for class mean
   const meanGrade = getCBEGrade(meanScore);
   const meanPoints = getPointsFromGrade(meanGrade);
 
@@ -91,14 +91,14 @@ const AdminDashboard = () => {
       </div>
 
       <section>
-        <h3 style={{ color: "#2e7d32" }}>School Performance (Table)</h3>
+        <h3 style={{ color: "#2e7d32" }}>School Performance</h3>
         <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "1rem" }}>
           <thead style={{ backgroundColor: "#f5f5f5" }}>
             <tr>
               <th style={thStyle}>Subject</th>
               <th style={thStyle}>Average Score</th>
               <th style={thStyle}>Grade</th>
-              <th style={thStyle}>Points</th>
+              <th style={thStyle}>Lubrics</th>
             </tr>
           </thead>
           <tbody>
@@ -138,7 +138,7 @@ const AdminDashboard = () => {
       </section>
 
       <section style={{ marginTop: "2rem" }}>
-        <h3 style={{ color: "#2e7d32" }}>Average Score per Subject (Bar Chart)</h3>
+        <h3 style={{ color: "#2e7d32" }}>Average Score per Subject</h3>
         <BarChart width={600} height={300} data={performance}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="subject" />
@@ -150,7 +150,7 @@ const AdminDashboard = () => {
       </section>
 
       <section style={{ marginTop: "2rem" }}>
-        <h3 style={{ color: "#d32f2f" }}>Subject Contribution to Total Score (Pie Chart)</h3>
+        <h3 style={{ color: "#d32f2f" }}>Subject Contribution to Total Score</h3>
         <PieChart width={500} height={350}>
           <Pie
             data={performance}
@@ -166,7 +166,6 @@ const AdminDashboard = () => {
             ))}
           </Pie>
           <Tooltip />
-          {/* 🔹 Add Legend for clarity */}
           <Legend
             layout="vertical"
             align="right"
