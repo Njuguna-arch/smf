@@ -42,7 +42,7 @@ const ExamTable = ({ results }) => {
           {results.map((exam, idx) => (
             <tr key={exam._id} style={{ backgroundColor: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
               <td style={tdStyle}>{exam.admissionNumber}</td>
-              {/* ✅ Show student name from populated studentId */}
+              {/* Show student name from populated studentId */}
               <td style={tdStyle}>{exam.studentId?.name || "N/A"}</td>
               {subjects.map((subj) => {
                 const subjectResult = exam.subjectResults.find((s) => s.subjectName === subj);

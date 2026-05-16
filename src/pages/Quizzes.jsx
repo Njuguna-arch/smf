@@ -89,7 +89,7 @@ const Quizzes = () => {
         return;
       }
 
-      // Use quizService submitQuiz (calls backend via api.js)
+      // Use quizService submitQuiz
       const res = await submitQuiz(quizId, selectedOption);
 
       // Update result state with immediate feedback

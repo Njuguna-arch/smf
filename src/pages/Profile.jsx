@@ -38,16 +38,15 @@ const Profile = () => {
     return <p style={{ padding: "2rem" }}>Loading profile...</p>;
   }
 
-  // Always resolve to backend /uploads
+  // Always resolve to backend
   const photoSrc = student.photoUrl
     ? `${API_URL}/uploads/${student.photoUrl.replace(/^\/uploads\//, "")}`
     : `${API_URL}/uploads/default-avatar.png`;
 
   return (
     <div style={{ padding: "2rem" }}>
-      {/* Welcoming Header */}
       <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-        <marquee behavior="" direction="left" scrollamount="9">
+        <marquee behavior="" direction="left" scrollamount="8">
           <h1 style={{ margin: 0, fontSize: "2rem", color: "#0a0a0b", backgroundColor: "#e8e113" }}>
             Liskan Academy Primary and Junior School, MOTTO: Hard Work Pays                                            
           </h1>

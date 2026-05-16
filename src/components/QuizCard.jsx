@@ -16,10 +16,10 @@ const QuizCard = ({ quiz, answers, onSelect, result }) => {
           let bgColor = "transparent";
           if (feedback) {
             if (option === feedback.selectedOption) {
-              bgColor = feedback.isCorrect ? "#d4edda" : "#f8d7da"; // green/red
+              bgColor = feedback.isCorrect ? "#d4edda" : "#f8d7da";
             }
             if (!feedback.isCorrect && option === feedback.correctAnswer) {
-              bgColor = "#d1ecf1"; // blue highlight for correct answer
+              bgColor = "#d1ecf1";
             }
           }
 

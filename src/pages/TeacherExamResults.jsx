@@ -8,7 +8,7 @@ const TeacherExamResults = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // 🔹 Filter states
+  // Filter states
   const [selectedExamType, setSelectedExamType] = useState("Opener");
   const [selectedTerm, setSelectedTerm] = useState("Term 1");
   const [selectedYear, setSelectedYear] = useState("2026");
@@ -32,7 +32,7 @@ const TeacherExamResults = () => {
     loadExams();
   }, []);
 
-  // 🔹 Apply filters when Search button is clicked
+  //Apply filters when Search button is clicked
   const handleSearch = () => {
     let results = exams;
 
@@ -43,7 +43,7 @@ const TeacherExamResults = () => {
       results = results.filter((exam) => exam.term === selectedTerm);
     }
     if (selectedYear) {
-      results = results.filter((exam) => exam.year === Number(selectedYear)); // ✅ FIX: convert string to number
+      results = results.filter((exam) => exam.year === Number(selectedYear));
     }
 
     setFilteredExams(results);
@@ -61,9 +61,7 @@ const TeacherExamResults = () => {
       <h2 style={{ marginBottom: "1rem", color: "#2e7d32" }}>Exam Management</h2>
       <ExamUploadForm />
 
-      {/* 🔹 Filters */}
       <div style={{ marginBottom: "1rem", display: "flex", gap: "1rem" }}>
-        {/* Exam type filter */}
         <div>
           <label style={{ marginRight: "10px", fontWeight: "bold" }}>
             Exam Type:
@@ -83,7 +81,6 @@ const TeacherExamResults = () => {
           </select>
         </div>
 
-        {/* Term filter */}
         <div>
           <label style={{ marginRight: "10px", fontWeight: "bold" }}>
             Term:
@@ -103,7 +100,6 @@ const TeacherExamResults = () => {
           </select>
         </div>
 
-        {/* Year filter */}
         <div>
           <label style={{ marginRight: "10px", fontWeight: "bold" }}>
             Year:
@@ -123,7 +119,6 @@ const TeacherExamResults = () => {
           </select>
         </div>
 
-        {/* Search button */}
         <button
           onClick={handleSearch}
           style={{

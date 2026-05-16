@@ -5,7 +5,6 @@ import {
   PieChart, Pie, Cell
 } from "recharts";
 
-//Helper: map grade → points
 const getPointsFromGrade = (grade) => {
   switch (grade) {
     case "EE1": return 8;
@@ -20,7 +19,6 @@ const getPointsFromGrade = (grade) => {
   }
 };
 
-//Helper: compute grade from marks
 const getCBEGrade = (marks) => {
   if (marks >= 90) return "EE1";
   if (marks >= 75) return "EE2";
@@ -61,7 +59,6 @@ const AdminDashboard = () => {
     <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
       <h2 style={{ color: "#1565c0", marginBottom: "1rem" }}>Admin Dashboard</h2>
 
-      {/* Filters */}
       <div style={{ marginBottom: "1.5rem", display: "flex", gap: "20px" }}>
         <label>
           Exam Type:

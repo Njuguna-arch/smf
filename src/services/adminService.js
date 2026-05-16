@@ -36,13 +36,13 @@ export const fetchAnnouncements = async () => {
   return res.data;
 };
 
-// Post text announcement (JSON only)
+// Post text announcement
 export const postTextAnnouncement = async (message) => {
   const res = await api.post("/admin/announcements/text", { message });
   return res.data;
 };
 
-// Post file announcement (multipart/form-data)
+// Post file announcement
 export const postFileAnnouncement = async (formData) => {
   const res = await api.post("/admin/announcements/file", formData, {
     headers: { "Content-Type": "multipart/form-data" },
