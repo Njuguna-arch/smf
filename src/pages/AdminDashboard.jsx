@@ -29,8 +29,6 @@ const getCBEGrade = (marks) => {
   if (marks >= 11) return "BE1";
   return "BE2";
 };
-
-// Reusable performance section
 const PerformanceSection = ({ title, performance, totalScore, meanScore }) => {
   const colors = ["#1565c0", "#2e7d32", "#f57c00", "#6a1b9a", "#d32f2f"];
   const meanGrade = getCBEGrade(meanScore);
@@ -114,7 +112,6 @@ const PerformanceSection = ({ title, performance, totalScore, meanScore }) => {
     </section>
   );
 };
-
 const AdminDashboard = () => {
   const [primaryPerformance, setPrimaryPerformance] = useState([]);
   const [primaryTotalScore, setPrimaryTotalScore] = useState(0);
@@ -124,11 +121,31 @@ const AdminDashboard = () => {
   const [juniorTotalScore, setJuniorTotalScore] = useState(0);
   const [juniorMeanScore, setJuniorMeanScore] = useState(0);
 
-  const [examType, setExamType] = useState("Mid-Term");
-  const [term, setTerm] = useState("Term 1");
+  const [examTypes, setExamTypes] = useState([]);
+  const [terms, setTerms] = useState([]);
+  const [years, setYears] = useState([]);
+
+  const [examType, setExamType] = useState("");
+  const [term, setTerm] = useState("");
   const [year, setYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
+    Promise.all([
+      fetch("/api/admin/exam-types").then(res => res.json()),
+      fetch("/api/admin/terms").then(res => res.json()),
+      fetch("/api/admin/years").then(res => res.json())
+    ]).then(([types, terms, years]) => {
+      setExamTypes(types);
+      setTerms(terms);
+      setYears(years);
+      setExamType(types[0] || "");
+      setTerm(terms[0] || "");
+      setYear(years[0] || new Date().getFullYear());
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!examType || !term || !year) return;
     fetchSchoolPerformance(examType, term, year)
       .then((data) => {
         setPrimaryPerformance(data.primary?.performance || []);
@@ -150,27 +167,20 @@ const AdminDashboard = () => {
         <label>
           Exam Type:
           <select value={examType} onChange={(e) => setExamType(e.target.value)} style={selectStyle}>
-            <option value="Opener">Opener</option>
-            <option value="Mid-Term">Mid-Term</option>
-            <option value="End-Term">End-Term</option>
+            {examTypes.map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
         </label>
         <label>
           Term:
           <select value={term} onChange={(e) => setTerm(e.target.value)} style={selectStyle}>
-            <option value="Term 1">Term 1</option>
-            <option value="Term 2">Term 2</option>
-            <option value="Term 3">Term 3</option>
+            {terms.map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
         </label>
         <label>
           Year:
-          <input
-            type="number"
-            value={year}
-            onChange={(e) => setYear(Number(e.target.value))}
-            style={{ ...selectStyle, width: "100px" }}
-          />
+          <select value={year} onChange={(e) => setYear(Number(e.target.value))} style={selectStyle}>
+            {years.map((y) => <option key={y} value={y}>{y}</option>)}
+          </select>
         </label>
       </div>
 
@@ -190,7 +200,6 @@ const AdminDashboard = () => {
     </div>
   );
 };
-
 const thStyle = {
   border: "1px solid #ccc",
   padding: "10px",
