@@ -144,20 +144,26 @@ const AdminDashboard = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (!examType || !term || !year) return;
-    fetchSchoolPerformance(examType, term, year)
-      .then((data) => {
-        setPrimaryPerformance(data.primary?.performance || []);
-        setPrimaryTotalScore(data.primary?.totalScore || 0);
-        setPrimaryMeanScore(data.primary?.meanScore || 0);
+useEffect(() => {
+  if (!examType || !term || !year) return;
 
-        setJuniorPerformance(data.juniorSecondary?.performance || []);
-        setJuniorTotalScore(data.juniorSecondary?.totalScore || 0);
-        setJuniorMeanScore(data.juniorSecondary?.meanScore || 0);
-      })
-      .catch((err) => console.error("Failed to fetch performance", err));
-  }, [examType, term, year]);
+  // Normalize values before sending to backend
+  const normalizedExamType = examType.trim().toLowerCase();
+  const normalizedTerm = term.trim().toLowerCase();
+  const normalizedYear = Number(year);
+
+  fetchSchoolPerformance(normalizedExamType, normalizedTerm, normalizedYear)
+    .then((data) => {
+      setPrimaryPerformance(data.primary?.performance || []);
+      setPrimaryTotalScore(data.primary?.totalScore || 0);
+      setPrimaryMeanScore(data.primary?.meanScore || 0);
+
+      setJuniorPerformance(data.juniorSecondary?.performance || []);
+      setJuniorTotalScore(data.juniorSecondary?.totalScore || 0);
+      setJuniorMeanScore(data.juniorSecondary?.meanScore || 0);
+    })
+    .catch((err) => console.error("Failed to fetch performance", err));
+}, [examType, term, year]);
 
   return (
     <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>

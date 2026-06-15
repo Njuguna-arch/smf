@@ -1,12 +1,18 @@
 import api from "./api";
 
+// 🔹 Normalize helper
+const normalize = (val) => (val ? val.trim().toLowerCase() : "");
+
 export const fetchStudentResults = async (admissionNumber) => {
   try {
     if (!admissionNumber) {
       throw new Error("Admission number is required to fetch exam results");
     }
 
-    const res = await api.get(`/exams/${admissionNumber}`, {
+    // Normalize admission number (strip ADM prefix, uppercase)
+    const normalizedAdmission = admissionNumber.trim().toUpperCase().replace(/^ADM/, "");
+
+    const res = await api.get(`/exams/${normalizedAdmission}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     return res.data;
@@ -16,16 +22,24 @@ export const fetchStudentResults = async (admissionNumber) => {
   }
 };
 
-export const fetchExamPDF = async (admissionNumber, examType) => {
+export const fetchExamPDF = async (admissionNumber, examType, term, year) => {
   try {
-    if (!admissionNumber || !examType) {
-      throw new Error("Admission number and exam type are required for PDF fetch");
+    if (!admissionNumber || !examType || !term || !year) {
+      throw new Error("Admission number, exam type, term, and year are required for PDF fetch");
     }
 
-    const res = await api.get(`/exams/${admissionNumber}/${examType}/pdf`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      responseType: "blob",
-    });
+    const normalizedAdmission = admissionNumber.trim().toUpperCase().replace(/^ADM/, "");
+    const normalizedExamType = normalize(examType);
+    const normalizedTerm = normalize(term);
+    const normalizedYear = Number(year);
+
+    const res = await api.get(
+      `/exams/${normalizedAdmission}/${normalizedExamType}/${normalizedTerm}/${normalizedYear}/pdf`,
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        responseType: "blob",
+      }
+    );
 
     const fileURL = window.URL.createObjectURL(new Blob([res.data]));
     window.open(fileURL);
@@ -54,11 +68,18 @@ export const uploadExamCSV = async (file) => {
   }
 };
 
-export const fetchUploadedExams = async () => {
+export const fetchUploadedExams = async (examType, term, year) => {
   try {
-    const res = await api.get("/exams", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
+    const normalizedExamType = normalize(examType);
+    const normalizedTerm = normalize(term);
+    const normalizedYear = Number(year);
+
+    const res = await api.get(
+      `/exams?examType=${normalizedExamType}&term=${normalizedTerm}&year=${normalizedYear}`,
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      }
+    );
     return res.data.exams;
   } catch (err) {
     console.error("Error fetching uploaded exams:", err.message);

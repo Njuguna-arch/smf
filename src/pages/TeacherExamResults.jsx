@@ -32,22 +32,27 @@ const TeacherExamResults = () => {
     loadExams();
   }, []);
 
-  //Apply filters when Search button is clicked
-  const handleSearch = () => {
-    let results = exams;
+const handleSearch = () => {
+  let results = exams;
 
-    if (selectedExamType) {
-      results = results.filter((exam) => exam.examType === selectedExamType);
-    }
-    if (selectedTerm) {
-      results = results.filter((exam) => exam.term === selectedTerm);
-    }
-    if (selectedYear) {
-      results = results.filter((exam) => exam.year === Number(selectedYear));
-    }
+  if (selectedExamType) {
+    results = results.filter(
+      (exam) => exam.examType === selectedExamType.toLowerCase()
+    );
+  }
+  if (selectedTerm) {
+    results = results.filter(
+      (exam) => exam.term === selectedTerm.toLowerCase()
+    );
+  }
+  if (selectedYear) {
+    results = results.filter(
+      (exam) => exam.year === Number(selectedYear)
+    );
+  }
 
-    setFilteredExams(results);
-  };
+  setFilteredExams(results);
+};
 
   return (
     <div

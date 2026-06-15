@@ -1,9 +1,16 @@
 import api from "./api";
 
+// 🔹 Helper to normalize values
+const normalize = (val) => (val ? val.trim().toLowerCase() : "");
+
 // Fetch school performance with filters
 export const fetchSchoolPerformance = async (examType, term, year) => {
+  const normalizedExamType = normalize(examType);
+  const normalizedTerm = normalize(term);
+  const normalizedYear = Number(year);
+
   const res = await api.get(
-    `/admin/performance?examType=${examType}&term=${term}&year=${year}`
+    `/admin/performance?examType=${normalizedExamType}&term=${normalizedTerm}&year=${normalizedYear}`
   );
   return res.data;
 };

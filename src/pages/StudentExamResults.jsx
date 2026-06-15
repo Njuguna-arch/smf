@@ -74,18 +74,18 @@ const StudentExamResults = () => {
     loadResults();
   }, [user?.admissionNumber]);
 
-  const handleSearch = () => {
-    setAppliedExamType(selectedExamType);
-    setAppliedTerm(selectedTerm);
-    setAppliedYear(selectedYear);
-  };
+const handleSearch = () => {
+  setAppliedExamType(selectedExamType.trim().toLowerCase());
+  setAppliedTerm(selectedTerm.trim().toLowerCase());
+  setAppliedYear(Number(selectedYear));
+};
 
-  const filteredResults = results.filter(
-    (exam) =>
-      exam.examType === appliedExamType &&
-      exam.term === appliedTerm &&
-      exam.year === appliedYear
-  );
+const filteredResults = results.filter(
+  (exam) =>
+    exam.examType === appliedExamType &&
+    exam.term === appliedTerm &&
+    exam.year === appliedYear
+);
 
   if (loading) return <p style={{ color: "#555" }}>Loading exam results...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
