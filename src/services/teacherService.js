@@ -3,7 +3,7 @@ import api from "./api";
 export const uploadExamCSV = async (formData) => {
   try {
     console.log("📤 Uploading exam CSV...");
-    const res = await api.post("/api/teacher/exam/csv", formData, {
+    const res = await api.post("/teacher/exam/csv", formData, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "multipart/form-data",
@@ -20,7 +20,7 @@ export const uploadExamCSV = async (formData) => {
 export const addDisciplineComment = async (data) => {
   try {
     console.log("📝 Adding discipline comment:", data);
-    const res = await api.post("/api/teacher/discipline", data, {
+    const res = await api.post("/teacher/discipline", data, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     console.log("✅ Discipline comment response:", res.data);
@@ -54,7 +54,7 @@ export const fetchClassPerformance = async (examType, term, year) => {
 export const fetchStudentCompletedQuizzes = async (studentId) => {
   try {
     console.log("📚 Fetching completed quizzes for student:", studentId);
-    const res = await api.get(`/api/teacher/${studentId}/completed-quizzes`, {
+    const res = await api.get(`/teacher/${studentId}/completed-quizzes`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     console.log("✅ Completed quizzes response:", res.data);
