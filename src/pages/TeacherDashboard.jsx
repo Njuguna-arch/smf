@@ -95,6 +95,7 @@ const TeacherDashboard = () => {
               onChange={(e) => setExamType(e.target.value)}
               sx={{ minWidth: 150 }}
             >
+              {/* ✅ Values match backend exactly */}
               <MenuItem value="Opener">Opener</MenuItem>
               <MenuItem value="Mid-Term">Mid-Term</MenuItem>
               <MenuItem value="End-Term">End-Term</MenuItem>
@@ -110,6 +111,7 @@ const TeacherDashboard = () => {
               onChange={(e) => setTerm(e.target.value)}
               sx={{ minWidth: 150 }}
             >
+              {/* ✅ Values match backend exactly */}
               <MenuItem value="Term 1">Term 1</MenuItem>
               <MenuItem value="Term 2">Term 2</MenuItem>
               <MenuItem value="Term 3">Term 3</MenuItem>

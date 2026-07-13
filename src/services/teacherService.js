@@ -38,13 +38,11 @@ export const fetchClassPerformance = async (examType, term, year) => {
     if (term) query += `${query ? "&" : ""}term=${encodeURIComponent(term)}`;
     if (year) query += `${query ? "&" : ""}year=${encodeURIComponent(year)}`;
 
-    const url = `/api/teacher/performance?${query}`;
+    // ✅ Only /teacher/performance because baseURL already has /api
+    const url = `/teacher/performance?${query}`;
     console.log("🌐 Fetching class performance from URL:", url);
 
-    const res = await api.get(url, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-
+    const res = await api.get(url);
     console.log("📊 Backend response received:", res.data);
     return res.data;
   } catch (err) {
