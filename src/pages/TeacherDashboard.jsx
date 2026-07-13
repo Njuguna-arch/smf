@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { fetchClassPerformance } from "../services/teacherService";
 import {
   Box,
@@ -12,6 +12,7 @@ import {
   CircularProgress,
   Select,
   MenuItem,
+  Button,
 } from "@mui/material";
 
 const getPointsFromGrade = (grade) => {
@@ -43,10 +44,10 @@ const TeacherDashboard = () => {
   const [performance, setPerformance] = useState([]);
   const [totalScore, setTotalScore] = useState(0);
   const [meanScore, setMeanScore] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  //Filters
+  // Filters
   const [examType, setExamType] = useState("Mid-Term");
   const [term, setTerm] = useState("Term 1");
   const [year, setYear] = useState(2026);
@@ -55,22 +56,19 @@ const TeacherDashboard = () => {
     setLoading(true);
     setError("");
     try {
+      console.log("🔎 Selected filters →", { type, termValue, yearValue });
       const data = await fetchClassPerformance(type, termValue, yearValue);
       console.log("📊 Raw backend response:", data);
       setPerformance(Array.isArray(data.performance) ? data.performance : []);
       setTotalScore(data.totalScore || 0);
       setMeanScore(data.meanScore || 0);
     } catch (err) {
-      console.error("Failed to fetch class performance", err);
+      console.error("❌ Failed to fetch class performance", err);
       setError("Failed to load class performance");
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    loadPerformance(examType, term, year);
-  }, [examType, term, year]);
 
   // Compute grade + points for class mean
   const meanGrade = getCBEGrade(meanScore);
@@ -87,7 +85,7 @@ const TeacherDashboard = () => {
           Class Performance
         </Typography>
 
-        <Box sx={{ mb: 2, display: "flex", gap: 3 }}>
+        <Box sx={{ mb: 2, display: "flex", gap: 3, alignItems: "center" }}>
           <Box>
             <Typography variant="body1" sx={{ fontWeight: "bold" }}>
               Exam Type:
@@ -132,6 +130,14 @@ const TeacherDashboard = () => {
               <MenuItem value={2027}>2027</MenuItem>
             </Select>
           </Box>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => loadPerformance(examType, term, year)}
+          >
+            Search
+          </Button>
         </Box>
 
         {loading ? (
