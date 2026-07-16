@@ -5,20 +5,20 @@ const TeacherSidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   const navItems = [
-    { label: "Dashboard", path: "dashboard" },
+    { label: "Dashboard", path: "" },
     { label: "Exams", path: "exams" },
     { label: "Discipline", path: "discipline" },
-    { label: "Upload Video", path: "upload-video" },
-    { label: "Add Quiz", path: "add-quiz" },
-    { label: "Completed Quizzes", path: "completed-quizzes" },
-    { label: "Announcements", path: "announcements" },
+    { label: "Upload Video", path: "videos/upload" },
+    { label: "Add Quiz", path: "quizzes/add" },
+    { label: "Completed Quizzes", path: "quizzes" },
+    // 🚫 Announcements removed
   ];
 
   return (
     <div
       style={{
         width: collapsed ? "60px" : "240px",
-        backgroundColor: "#1565c0", // Teacher Panel blue
+        backgroundColor: "#64b5f6",
         color: "#fff",
         transition: "width 0.3s",
         padding: "1rem",
@@ -43,6 +43,7 @@ const TeacherSidebar = () => {
         <NavLink
           key={item.path}
           to={`/teacher/${item.path}`}
+          end={item.path === "" || item.path === "quizzes"}
           style={({ isActive }) => ({
             padding: "0.5rem",
             borderRadius: "4px",
@@ -51,16 +52,16 @@ const TeacherSidebar = () => {
             color: "#fff",
             display: "block",
             transition: "background-color 0.2s",
-            backgroundColor: isActive ? "#0d47a1" : "transparent",
+            backgroundColor: isActive ? "#42a5f5" : "transparent",
             fontWeight: isActive ? "bold" : "normal",
           })}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#1976d2"; // hover color
+            e.currentTarget.style.backgroundColor = "#90caf9";
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor =
               window.location.pathname.includes(item.path)
-                ? "#0d47a1"
+                ? "#42a5f5"
                 : "transparent";
           }}
         >
