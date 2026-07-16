@@ -18,13 +18,14 @@ const TeacherSidebar = () => {
     <div
       style={{
         width: collapsed ? "60px" : "240px",
-        backgroundColor: "#1565c0",
+        backgroundColor: "#1565c0", // Teacher Panel blue
         color: "#fff",
         transition: "width 0.3s",
         padding: "1rem",
         minHeight: "100vh",
       }}
     >
+      {/* Collapse toggle */}
       <div
         style={{
           cursor: "pointer",
@@ -37,6 +38,7 @@ const TeacherSidebar = () => {
         {collapsed ? ">>" : "<<"}
       </div>
 
+      {/* Nav items */}
       {navItems.map((item) => (
         <NavLink
           key={item.path}
@@ -48,9 +50,19 @@ const TeacherSidebar = () => {
             textDecoration: "none",
             color: "#fff",
             display: "block",
+            transition: "background-color 0.2s",
             backgroundColor: isActive ? "#0d47a1" : "transparent",
             fontWeight: isActive ? "bold" : "normal",
           })}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#1976d2"; // hover color
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor =
+              window.location.pathname.includes(item.path)
+                ? "#0d47a1"
+                : "transparent";
+          }}
         >
           {collapsed ? item.label[0] : item.label}
         </NavLink>
