@@ -15,58 +15,55 @@ const TeacherSidebar = () => {
     { label: "Announcements", path: "announcements" },
   ];
 
-  const styles = {
-    sidebar: {
-      width: collapsed ? "60px" : "240px",
-      backgroundColor: "#1565c0", // teacher theme color (blue)
-      color: "#fff",
-      transition: "width 0.3s",
-      padding: "1rem",
-      minHeight: "100vh",
-    },
-    toggle: {
-      cursor: "pointer",
-      marginBottom: "1rem",
-      textAlign: "center",
-      fontWeight: "bold",
-    },
-    name: {
-      textAlign: "center",
-      fontWeight: "bold",
-      marginBottom: "1rem",
-      display: collapsed ? "none" : "block",
-    },
-    navLink: {
-      padding: "0.5rem",
-      borderRadius: "4px",
-      marginBottom: "0.5rem",
-      textDecoration: "none",
-      color: "#fff",
-      display: "block",
-    },
-    activeNavLink: {
-      backgroundColor: "#0d47a1",
-      fontWeight: "bold",
-    },
-  };
-
   return (
-    <div style={styles.sidebar}>
-      <div style={styles.toggle} onClick={() => setCollapsed(!collapsed)}>
+    <div
+      style={{
+        width: collapsed ? "60px" : "240px",
+        backgroundColor: "#1565c0",
+        color: "#fff",
+        transition: "width 0.3s",
+        padding: "1rem",
+        minHeight: "100vh",
+      }}
+    >
+      <div
+        style={{
+          cursor: "pointer",
+          marginBottom: "1rem",
+          textAlign: "center",
+          fontWeight: "bold",
+        }}
+        onClick={() => setCollapsed(!collapsed)}
+      >
         {collapsed ? ">>" : "<<"}
       </div>
 
-      {user && <div style={styles.name}>{user.name}</div>}
+      {user && !collapsed && (
+        <div
+          style={{
+            textAlign: "center",
+            fontWeight: "bold",
+            marginBottom: "1rem",
+          }}
+        >
+          {user.name}
+        </div>
+      )}
 
       {navItems.map((item) => (
         <NavLink
           key={item.path}
           to={`/teacher/${item.path}`}
-          style={({ isActive }) =>
-            isActive
-              ? { ...styles.navLink, ...styles.activeNavLink }
-              : styles.navLink
-          }
+          style={({ isActive }) => ({
+            padding: "0.5rem",
+            borderRadius: "4px",
+            marginBottom: "0.5rem",
+            textDecoration: "none",
+            color: "#fff",
+            display: "block",
+            backgroundColor: isActive ? "#0d47a1" : "transparent",
+            fontWeight: isActive ? "bold" : "normal",
+          })}
         >
           {collapsed ? item.label[0] : item.label}
         </NavLink>
