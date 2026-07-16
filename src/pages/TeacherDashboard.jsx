@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { fetchClassPerformance } from "../services/teacherService";
-import TeacherSidebar from "./TeacherSidebar";
+import TeacherSidebar from "../components/TeacherSidebar.jsx";
 import {
   Box,
   Typography,
