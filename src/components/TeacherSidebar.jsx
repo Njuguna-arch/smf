@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 const TeacherSidebar = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
   const [collapsed, setCollapsed] = useState(false);
 
   const navItems = [
@@ -37,18 +36,6 @@ const TeacherSidebar = () => {
       >
         {collapsed ? ">>" : "<<"}
       </div>
-
-      {user && !collapsed && (
-        <div
-          style={{
-            textAlign: "center",
-            fontWeight: "bold",
-            marginBottom: "1rem",
-          }}
-        >
-          {user.name}
-        </div>
-      )}
 
       {navItems.map((item) => (
         <NavLink
