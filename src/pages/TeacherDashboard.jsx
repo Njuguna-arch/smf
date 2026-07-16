@@ -77,8 +77,10 @@ const TeacherDashboard = () => {
 
   return (
     <Box sx={{ display: "flex" }}>
-      {/* Sidebar */}
-      <TeacherSidebar />
+      {/* Sidebar with flexShrink so width changes are respected */}
+      <Box sx={{ flexShrink: 0 }}>
+        <TeacherSidebar />
+      </Box>
 
       {/* Main Dashboard Content */}
       <Box sx={{ flex: 1, p: 3 }}>
