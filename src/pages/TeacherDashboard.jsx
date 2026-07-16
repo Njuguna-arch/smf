@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { fetchClassPerformance } from "../services/teacherService";
+import TeacherSidebar from "./TeacherSidebar";
 import {
   Box,
   Typography,
@@ -75,123 +76,127 @@ const TeacherDashboard = () => {
   const meanPoints = getPointsFromGrade(meanGrade);
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom color="primary">
-        Liskan Academy — Teacher Dashboard
-      </Typography>
+    <Box sx={{ display: "flex" }}>
+      {/* Sidebar */}
+      <TeacherSidebar />
 
-      <Paper elevation={3} sx={{ p: 2 }}>
-        <Typography variant="h6" gutterBottom>
-          Class Performance
+      {/* Main Dashboard Content */}
+      <Box sx={{ flex: 1, p: 3 }}>
+        <Typography variant="h4" gutterBottom color="primary">
+          Liskan Academy — Teacher Dashboard
         </Typography>
 
-        <Box sx={{ mb: 2, display: "flex", gap: 3, alignItems: "center" }}>
-          <Box>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              Exam Type:
-            </Typography>
-            <Select
-              value={examType}
-              onChange={(e) => setExamType(e.target.value)}
-              sx={{ minWidth: 150 }}
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            Class Performance
+          </Typography>
+
+          <Box sx={{ mb: 2, display: "flex", gap: 3, alignItems: "center" }}>
+            <Box>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                Exam Type:
+              </Typography>
+              <Select
+                value={examType}
+                onChange={(e) => setExamType(e.target.value)}
+                sx={{ minWidth: 150 }}
+              >
+                <MenuItem value="Opener">Opener</MenuItem>
+                <MenuItem value="Mid-Term">Mid-Term</MenuItem>
+                <MenuItem value="End-Term">End-Term</MenuItem>
+              </Select>
+            </Box>
+
+            <Box>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                Term:
+              </Typography>
+              <Select
+                value={term}
+                onChange={(e) => setTerm(e.target.value)}
+                sx={{ minWidth: 150 }}
+              >
+                <MenuItem value="Term 1">Term 1</MenuItem>
+                <MenuItem value="Term 2">Term 2</MenuItem>
+                <MenuItem value="Term 3">Term 3</MenuItem>
+              </Select>
+            </Box>
+
+            <Box>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                Year:
+              </Typography>
+              <Select
+                value={year}
+                onChange={(e) => setYear(Number(e.target.value))}
+                sx={{ minWidth: 150 }}
+              >
+                <MenuItem value={2025}>2025</MenuItem>
+                <MenuItem value={2026}>2026</MenuItem>
+                <MenuItem value={2027}>2027</MenuItem>
+              </Select>
+            </Box>
+
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => loadPerformance(examType, term, year)}
             >
-              {/* ✅ Values match backend exactly */}
-              <MenuItem value="Opener">Opener</MenuItem>
-              <MenuItem value="Mid-Term">Mid-Term</MenuItem>
-              <MenuItem value="End-Term">End-Term</MenuItem>
-            </Select>
+              Search
+            </Button>
           </Box>
 
-          <Box>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              Term:
-            </Typography>
-            <Select
-              value={term}
-              onChange={(e) => setTerm(e.target.value)}
-              sx={{ minWidth: 150 }}
-            >
-              {/* ✅ Values match backend exactly */}
-              <MenuItem value="Term 1">Term 1</MenuItem>
-              <MenuItem value="Term 2">Term 2</MenuItem>
-              <MenuItem value="Term 3">Term 3</MenuItem>
-            </Select>
-          </Box>
-
-          <Box>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              Year:
-            </Typography>
-            <Select
-              value={year}
-              onChange={(e) => setYear(Number(e.target.value))}
-              sx={{ minWidth: 150 }}
-            >
-              <MenuItem value={2025}>2025</MenuItem>
-              <MenuItem value={2026}>2026</MenuItem>
-              <MenuItem value={2027}>2027</MenuItem>
-            </Select>
-          </Box>
-
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => loadPerformance(examType, term, year)}
-          >
-            Search
-          </Button>
-        </Box>
-
-        {loading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
-            <CircularProgress />
-          </Box>
-        ) : error ? (
-          <Typography color="error">{error}</Typography>
-        ) : (
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell><strong>Subject</strong></TableCell>
-                <TableCell><strong>Average Score</strong></TableCell>
-                <TableCell><strong>Grade</strong></TableCell>
-                <TableCell><strong>Lubrics</strong></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {performance.length > 0 ? (
-                performance.map((p) => {
-                  const grade = getCBEGrade(Number(p.average));
-                  const points = getPointsFromGrade(grade);
-                  return (
-                    <TableRow key={p.subject}>
-                      <TableCell>{p.subject}</TableCell>
-                      <TableCell>{Number(p.average).toFixed(2)}</TableCell>
-                      <TableCell>{grade}</TableCell>
-                      <TableCell>{points}</TableCell>
-                    </TableRow>
-                  );
-                })
-              ) : (
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
+              <CircularProgress />
+            </Box>
+          ) : error ? (
+            <Typography color="error">{error}</Typography>
+          ) : (
+            <Table>
+              <TableHead>
                 <TableRow>
-                  <TableCell colSpan={4}>No exam results available</TableCell>
+                  <TableCell><strong>Subject</strong></TableCell>
+                  <TableCell><strong>Average Score</strong></TableCell>
+                  <TableCell><strong>Grade</strong></TableCell>
+                  <TableCell><strong>Lubrics</strong></TableCell>
                 </TableRow>
-              )}
-              <TableRow>
-                <TableCell><strong>Class Total Marks</strong></TableCell>
-                <TableCell>{totalScore.toFixed(2)}</TableCell>
-                <TableCell colSpan={2}></TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell><strong>Class Mean</strong></TableCell>
-                <TableCell>{meanScore.toFixed(2)}</TableCell>
-                <TableCell>{meanGrade}</TableCell>
-                <TableCell>{meanPoints}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        )}
-      </Paper>
+              </TableHead>
+              <TableBody>
+                {performance.length > 0 ? (
+                  performance.map((p) => {
+                    const grade = getCBEGrade(Number(p.average));
+                    const points = getPointsFromGrade(grade);
+                    return (
+                      <TableRow key={p.subject}>
+                        <TableCell>{p.subject}</TableCell>
+                        <TableCell>{Number(p.average).toFixed(2)}</TableCell>
+                        <TableCell>{grade}</TableCell>
+                        <TableCell>{points}</TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4}>No exam results available</TableCell>
+                  </TableRow>
+                )}
+                <TableRow>
+                  <TableCell><strong>Class Total Marks</strong></TableCell>
+                  <TableCell>{totalScore.toFixed(2)}</TableCell>
+                  <TableCell colSpan={2}></TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell><strong>Class Mean</strong></TableCell>
+                  <TableCell>{meanScore.toFixed(2)}</TableCell>
+                  <TableCell>{meanGrade}</TableCell>
+                  <TableCell>{meanPoints}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          )}
+        </Paper>
+      </Box>
     </Box>
   );
 };
