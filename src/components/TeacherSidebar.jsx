@@ -11,14 +11,13 @@ const TeacherSidebar = () => {
     { label: "Upload Video", path: "videos/upload" },
     { label: "Add Quiz", path: "quizzes/add" },
     { label: "Completed Quizzes", path: "quizzes" },
-    // 🚫 Announcements removed
   ];
 
   return (
     <div
       style={{
         width: collapsed ? "60px" : "240px",
-        backgroundColor: "#64b5f6",
+        backgroundColor: "#9ec4e3",
         color: "#fff",
         transition: "width 0.3s",
         padding: "1rem",
@@ -56,12 +55,12 @@ const TeacherSidebar = () => {
             fontWeight: isActive ? "bold" : "normal",
           })}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#90caf9";
+            e.currentTarget.style.backgroundColor = "#0c86eb";
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor =
               window.location.pathname.includes(item.path)
-                ? "#42a5f5"
+                ? "#1482db"
                 : "transparent";
           }}
         >
