@@ -80,3 +80,16 @@ export const fetchCompletedQuizzes = async (studentId) => {
     throw err;
   }
 };
+
+// Get signed download URL for a quiz
+export const getQuizDownloadUrl = async (quizId) => {
+  try {
+    const res = await api.get(`/quizzes/download/${quizId}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    return res.data;
+  } catch (err) {
+    console.error("Failed to get quiz download URL:", err.message);
+    throw err;
+  }
+};

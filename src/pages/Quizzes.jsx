@@ -5,6 +5,7 @@ import {
   submitQuiz,
   fetchSubjects,
   fetchCompletedQuizzes,
+  getQuizDownloadUrl,
 } from "../services/quizService";
 import QuizCard from "../components/QuizCard";
 import {
@@ -109,22 +110,26 @@ const Quizzes = () => {
     }
   };
 
-const handleDownload = (quiz) => {
+const handleDownload = async (quiz) => {
   try {
     if (!quiz.fileUrl) {
       alert("No file available for this quiz.");
       return;
     }
 
-    const extension = quiz.fileUrl.split(".").pop().toLowerCase();
-    const filename = `${quiz.subject}-Grade${quiz.grade}-Quiz.${extension}`;
+    const { url } = await getQuizDownloadUrl(quiz._id);
 
-    const link = document.createElement("a");
-    link.href = quiz.fileUrl;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (url) {
+      const extension = quiz.fileUrl.split(".").pop().toLowerCase();
+      const filename = `${quiz.subject}-Grade${quiz.grade}-Quiz.${extension}`;
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   } catch (err) {
     console.error("Download error:", err);
     alert("Download failed. Please try again.");
