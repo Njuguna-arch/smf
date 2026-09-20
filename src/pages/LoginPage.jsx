@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+﻿import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
 import { UserContext } from "../context/UserContext";
@@ -7,6 +7,7 @@ import "./LoginPage.css";
 const LoginPage = () => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [schoolCode, setSchoolCode] = useState("");
   const [role, setRole] = useState("student");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,7 +20,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const data = await login(identifier, password, role);
+      const data = await login(identifier, password, role, schoolCode);
 
       if (!data || !data.token || !data.user) {
         setError("Unexpected response from server");
@@ -48,6 +49,7 @@ const LoginPage = () => {
       if (userToStore.role === "student") navigate("/student/profile");
       if (userToStore.role === "teacher") navigate("/teacher");
       if (userToStore.role === "admin") navigate("/admin");
+      if (userToStore.role === "superadmin") navigate("/superadmin");
     } catch (err) {
       console.error("Login failed:", err);
       setError(
@@ -78,6 +80,7 @@ const LoginPage = () => {
               <option value="student">Student</option>
               <option value="teacher">Teacher</option>
               <option value="admin">Admin</option>
+              <option value="superadmin">Super Admin</option>
             </select>
           </div>
 
@@ -92,6 +95,18 @@ const LoginPage = () => {
               onChange={(e) => setIdentifier(e.target.value)}
               className="form-input"
               required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="schoolCode" className="form-label">School Code (Leave blank for Super Admin):</label>
+            <input
+              id="schoolCode"
+              type="text"
+              value={schoolCode}
+              onChange={(e) => setSchoolCode(e.target.value)}
+              className="form-input"
+              required={role !== "superadmin"}
             />
           </div>
 

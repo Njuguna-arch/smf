@@ -1,13 +1,13 @@
 import api from "./api";
 
-export const login = async (identifier, password, role) => {
+export const login = async (identifier, password, role, schoolCode) => {
   const endpoint = "/auth/login";
-  let payload;
+  let payload = { password, role, schoolCode };
 
   if (role === "student") {
-    payload = { admissionNumber: identifier.trim(), password, role };
+    payload.admissionNumber = identifier.trim();
   } else {
-    payload = { email: identifier.trim(), password, role };
+    payload.email = identifier.trim();
   }
 
   try {

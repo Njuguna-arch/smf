@@ -64,6 +64,17 @@ const AdminLayout = () => {
                 Announcements
               </NavLink>
             </li>
+            <li style={{ marginBottom: "0.5rem" }}>
+              <NavLink
+                to="/admin/sentbox"
+                style={({ isActive }) => ({
+                  ...linkStyle,
+                  ...(isActive ? activeStyle : {}),
+                })}
+              >
+                Sentbox
+              </NavLink>
+            </li>
           </ul>
         </nav>
       </aside>
