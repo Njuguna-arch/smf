@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   fetchAnnouncements,
   postTextAnnouncement,
@@ -47,9 +47,8 @@ const Announcements = () => {
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h2 style={{ marginBottom: "1rem", color: "#2e7d32" }}>Announcements</h2>
+      <h2 style={{ marginBottom: "1rem", color: "#2e7d32" }}>Announcements Board</h2>
 
-      {/* Text announcement */}
       <div style={{ marginBottom: "1rem" }}>
         <textarea
           placeholder="Write announcement..."
@@ -80,7 +79,6 @@ const Announcements = () => {
         </button>
       </div>
 
-      {/* File announcement */}
       <div style={{ marginBottom: "1rem" }}>
         <input
           type="file"
@@ -104,7 +102,6 @@ const Announcements = () => {
         </button>
       </div>
 
-      {/* Table of announcements */}
       <table
         style={{
           width: "100%",
@@ -132,7 +129,7 @@ const Announcements = () => {
               <td style={{ padding: "12px" }}>
                 {a.fileUrl ? (
                   <a
-                    href={`${API_URL}${a.fileUrl}`}
+                    href={${API_URL}}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{ color: "#007bff", textDecoration: "none" }}

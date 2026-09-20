@@ -5,9 +5,11 @@ import { UserProvider } from "./context/UserContext";
 import StudentLayout from "./layouts/StudentLayout";
 import TeacherLayout from "./layouts/TeacherLayout";
 import AdminLayout from "./layouts/AdminLayout";
+import SuperAdminLayout from "./layouts/SuperAdminLayout";
 
 // Pages
 import LoginPage from "./pages/LoginPage";
+import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import Profile from "./pages/Profile";
 import Quizzes from "./pages/Quizzes";
 import Videos from "./pages/Videos";
@@ -24,6 +26,7 @@ import TeacherDiscipline from "./pages/TeacherDiscipline";
 import AdminDashboard from "./pages/AdminDashboard";
 import ManageUsers from "./pages/ManageUsers";
 import Announcements from "./pages/Announcements";
+import Sentbox from "./pages/Sentbox";
 
 // Components
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -169,6 +172,27 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={["admin"]}>
                   <Announcements />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="sentbox"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <Sentbox />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+
+          {/* Super Admin routes */}
+          <Route path="/superadmin" element={<SuperAdminLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route
+              path="dashboard"
+              element={
+                <ProtectedRoute allowedRoles={["superadmin"]}>
+                  <SuperAdminDashboard />
                 </ProtectedRoute>
               }
             />

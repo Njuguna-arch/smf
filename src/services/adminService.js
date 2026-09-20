@@ -56,3 +56,11 @@ export const postFileAnnouncement = async (formData) => {
   });
   return res.data;
 };
+
+// Post bulk message (SMS/WhatsApp)
+export const postBulkMessage = async (formData) => {
+  const res = await api.post("/admin/announcements/bulk", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data;
+};
