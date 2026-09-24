@@ -8,23 +8,35 @@ const ExamResults = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    let isMounted = true;
+    const user = JSON.parse(localStorage.getItem("user") || "null");
     if (user && user.admissionNumber) {
       fetchStudentResults(user.admissionNumber)
         .then((data) => {
-          setResults(data);
-          setLoading(false);
+          if (isMounted) {
+            setResults(data);
+            setLoading(false);
+          }
         })
         .catch((err) => {
           console.error("Failed to fetch exam results", err);
-          setError("Unable to load exam results. Please try again later.");
-          setLoading(false);
+          if (isMounted) {
+            setError("Unable to load exam results. Please try again later.");
+            setLoading(false);
+          }
         });
     } else {
       console.warn("Missing admissionNumber in user object:", user);
-      setError("Student ID is missing. Please log in again.");
-      setLoading(false);
+      Promise.resolve().then(() => {
+        if (isMounted) {
+          setError("Student ID is missing. Please log in again.");
+          setLoading(false);
+        }
+      });
     }
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleViewPDF = (examType) => {

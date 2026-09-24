@@ -61,6 +61,7 @@ const TeacherDashboard = () => {
       setTotalScore(data.totalScore || 0);
       setMeanScore(data.meanScore || 0);
     } catch (err) {
+      console.error(err);
       setError("Failed to load class performance");
     } finally {
       setLoading(false);

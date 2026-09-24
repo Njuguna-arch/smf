@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { fetchVideos } from "../services/videoService";
 
 const Videos = () => {
@@ -8,11 +8,7 @@ const Videos = () => {
   const [grade, setGrade] = useState("All");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    loadVideos();
-  }, [search, subject, grade]);
-
-  const loadVideos = async () => {
+  const loadVideos = useCallback(async () => {
     setLoading(true);
     try {
       const data = await fetchVideos(subject, grade, search);
@@ -22,7 +18,11 @@ const Videos = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search, subject, grade]);
+
+  useEffect(() => {
+    loadVideos();
+  }, [loadVideos]);
 
   const toEmbedUrl = (url) => {
     if (!url) return "";

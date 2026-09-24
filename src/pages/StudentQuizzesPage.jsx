@@ -3,7 +3,7 @@ import axios from "axios";
 import StudentSelector from "../components/StudentSelector.jsx";
 
 const StudentQuizzesPage = () => {
-  const [studentId, setStudentId] = useState("");
+  const [_studentId, setStudentId] = useState("");
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(false);
 

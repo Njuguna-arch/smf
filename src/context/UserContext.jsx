@@ -4,40 +4,27 @@ import { getCurrentUser, getToken, logout } from "../services/authService";
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
+  const [user, setUser] = useState(() => {
     const storedUser = getCurrentUser();
-    const storedToken = getToken();
-
-    if (storedToken) {
-      setToken(storedToken);
-    }
-
-    if (storedUser) {
-      const normalizedUser = {
-        ...storedUser,
-        role: storedUser.role?.toLowerCase(),
-      };
-      setUser(normalizedUser);
-    }
-
-    setLoading(false);
-  }, []);
+    return storedUser
+      ? {
+          ...storedUser,
+          role: storedUser.role?.toLowerCase(),
+        }
+      : null;
+  });
+  const [token, setToken] = useState(() => getToken());
+  const [loading] = useState(false);
 
   useEffect(() => {
-    if (!loading) {
-      if (user && token) {
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("token", token);
-      } else if (!user && !token) {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-      }
+    if (user && token) {
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+    } else if (!user && !token) {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
     }
-  }, [user, token, loading]);
+  }, [user, token]);
 
   const loginUser = (userData, tokenData) => {
     const normalizedUser = {

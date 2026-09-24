@@ -1,5 +1,4 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   fetchQuizzes,
   submitQuiz,
@@ -30,6 +29,31 @@ const Quizzes = () => {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("active");
 
+  const loadQuizzes = useCallback(async (grade, subj) => {
+    setLoading(true);
+    try {
+      const data = await fetchQuizzes(grade, subj);
+      setQuizzes(data);
+      setError("");
+    } catch (err) {
+      console.error("Failed to fetch quizzes", err);
+      setError("Unable to load quizzes. Please try again later.");
+      setQuizzes([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const loadCompletedQuizzes = useCallback(async (studentId) => {
+    if (!studentId) return;
+    try {
+      const data = await fetchCompletedQuizzes(studentId);
+      setCompletedQuizzes(data);
+    } catch (err) {
+      console.error("Failed to fetch completed quizzes", err);
+    }
+  }, []);
+
   // Load subjects on mount
   useEffect(() => {
     fetchSubjects()
@@ -51,32 +75,7 @@ const Quizzes = () => {
       loadQuizzes(normalizedGrade, subject);
       loadCompletedQuizzes(user._id);
     }
-  }, [subject]);
-
-  const loadQuizzes = async (grade, subject) => {
-    setLoading(true);
-    try {
-      const data = await fetchQuizzes(grade, subject);
-      setQuizzes(data);
-      setError("");
-    } catch (err) {
-      console.error("Failed to fetch quizzes", err);
-      setError("Unable to load quizzes. Please try again later.");
-      setQuizzes([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadCompletedQuizzes = async (studentId) => {
-    if (!studentId) return;
-    try {
-      const data = await fetchCompletedQuizzes(studentId);
-      setCompletedQuizzes(data);
-    } catch (err) {
-      console.error("Failed to fetch completed quizzes", err);
-    }
-  };
+  }, [subject, loadQuizzes, loadCompletedQuizzes]);
 
   const handleSelect = (quizId, optionText) => {
     setAnswers((prev) => ({ ...prev, [quizId]: optionText }));

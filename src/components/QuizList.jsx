@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { fetchQuizzes, submitQuiz } from "../services/quizService";
 import QuizCard from "./QuizCard";
 
@@ -8,11 +8,7 @@ const QuizList = ({ grade, subject }) => {
   const [score, setScore] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    loadQuizzes();
-  }, [grade, subject]);
-
-  const loadQuizzes = async () => {
+  const loadQuizzes = useCallback(async () => {
     setLoading(true);
     try {
       const data = await fetchQuizzes(grade, subject);
@@ -23,7 +19,11 @@ const QuizList = ({ grade, subject }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [grade, subject]);
+
+  useEffect(() => {
+    loadQuizzes();
+  }, [loadQuizzes]);
 
   const handleSelect = (quizId, option) => {
     setSelectedOptions((prev) => ({ ...prev, [quizId]: option }));

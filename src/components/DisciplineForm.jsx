@@ -38,6 +38,7 @@ const DisciplineForm = ({ onRecordAdded }) => {
       setTerm("");
       setYear(new Date().getFullYear());
     } catch (err) {
+      console.error(err);
       setMessage("Failed to add discipline record");
     } finally {
       setLoading(false);

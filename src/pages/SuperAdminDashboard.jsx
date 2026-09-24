@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -9,15 +9,11 @@ const SuperAdminDashboard = () => {
   const [code, setCode] = useState("");
   const [address, setAddress] = useState("");
 
-  useEffect(() => {
-    fetchSchools();
-  }, []);
-
   const fetchSchools = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(${API_URL}/api/superadmin/schools, {
-        headers: { Authorization: \Bearer \\ }
+      const res = await axios.get(`${API_URL}/api/superadmin/schools`, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       setSchools(res.data);
     } catch (err) {
@@ -25,13 +21,17 @@ const SuperAdminDashboard = () => {
     }
   };
 
+  useEffect(() => {
+    fetchSchools();
+  }, []);
+
   const handleAddSchool = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.post(${API_URL}/api/superadmin/schools, 
+      const res = await axios.post(`${API_URL}/api/superadmin/schools`, 
         { name, code, address },
-        { headers: { Authorization: \Bearer \\ } }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setSchools([...schools, res.data]);
       setName("");
@@ -45,11 +45,11 @@ const SuperAdminDashboard = () => {
   };
 
   const handleRemoveSchool = async (schoolCode) => {
-    if (!window.confirm(\Are you sure you want to remove school \? This deletes associated users too.\)) return;
+    if (!window.confirm(`Are you sure you want to remove school ${schoolCode}? This deletes associated users too.`)) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(${API_URL}/api/superadmin/schools/\, {
-        headers: { Authorization: \Bearer \\ }
+      await axios.delete(`${API_URL}/api/superadmin/schools/${schoolCode}`, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       setSchools(schools.filter(s => s.code !== schoolCode));
       alert("School removed");

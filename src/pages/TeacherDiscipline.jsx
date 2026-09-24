@@ -13,6 +13,7 @@ const TeacherDiscipline = () => {
         const data = await fetchAllDisciplineRecords();
         setRecords(data);
       } catch (err) {
+        console.error(err);
         setError("Failed to load discipline records");
       } finally {
         setLoading(false);

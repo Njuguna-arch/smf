@@ -82,6 +82,7 @@ const AddQuizForm = () => {
       setQuizFile(null);
       setQuizType("mcq");
     } catch (err) {
+      console.error(err);
       setMessage("Failed to add quiz");
       setOpen(true);
     }

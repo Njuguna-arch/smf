@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -11,21 +11,21 @@ const Sentbox = () => {
   const [bulkPastedContacts, setBulkPastedContacts] = useState("");
   const [isSendingBulk, setIsSendingBulk] = useState(false);
 
-  useEffect(() => {
-    fetchMessages();
-  }, []);
-
   const fetchMessages = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(${API_URL}/api/admin/messages, {
-        headers: { Authorization: Bearer  }
+      const res = await axios.get(`${API_URL}/api/admin/messages`, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       setMessages(res.data);
     } catch (err) {
       console.error("Failed to fetch messages", err);
     }
   };
+
+  useEffect(() => {
+    fetchMessages();
+  }, []);
 
   const handleSendBulkMessage = async () => {
     if (!bulkMessage) {
@@ -50,14 +50,14 @@ const Sentbox = () => {
       }
 
       const token = localStorage.getItem("token");
-      const res = await axios.post(${API_URL}/api/admin/messages/bulk, formData, {
-        headers: { Authorization: Bearer  }
+      const res = await axios.post(`${API_URL}/api/admin/messages/bulk`, formData, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       if (res.data.sentMessage) {
         setMessages([res.data.sentMessage, ...messages]);
       }
-      alert(Successfully sent  messages.);
+      alert(`Successfully sent ${res.data.sentCount || 0} messages.`);
       setBulkMessage("");
       setBulkPastedContacts("");
       setBulkContactsFile(null);

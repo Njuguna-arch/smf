@@ -12,6 +12,7 @@ const DisciplineView = ({ admissionNumber }) => {
         const data = await fetchStudentDiscipline(admissionNumber);
         setRecords(data);
       } catch (err) {
+        console.error(err);
         setError("Failed to load discipline records");
       } finally {
         setLoading(false);
