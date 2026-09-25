@@ -2,13 +2,11 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
 import { UserContext } from "../context/UserContext";
-import "./LoginPage.css";
+import "./LoginPage.css"; // Reuse existing styles
 
-const LoginPage = () => {
-  const [identifier, setIdentifier] = useState("");
+const SuperAdminLoginPage = () => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [schoolCode, setSchoolCode] = useState("");
-  const [role, setRole] = useState("student");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { loginUser } = useContext(UserContext);
@@ -20,7 +18,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const data = await login(identifier, password, role, schoolCode);
+      const data = await login(email, password, "superadmin", "");
 
       if (!data || !data.token || !data.user) {
         setError("Unexpected response from server");
@@ -38,18 +36,17 @@ const LoginPage = () => {
         name: normalizedUser.name,
         email: normalizedUser.email,
         role: normalizedUser.role,
-        grade: normalizedUser.grade,
         photoUrl: normalizedUser.photoUrl,
-        admissionNumber: normalizedUser.admissionNumber,
       };
 
       loginUser(userToStore, data.token);
       localStorage.setItem("user", JSON.stringify(userToStore));
 
-      if (userToStore.role === "student") navigate("/student/profile");
-      if (userToStore.role === "teacher") navigate("/teacher");
-      if (userToStore.role === "admin") navigate("/admin");
-      
+      if (userToStore.role === "superadmin") {
+        navigate("/superadmin");
+      } else {
+        setError("User is not a superadmin");
+      }
     } catch (err) {
       console.error("Login failed:", err);
       setError(
@@ -64,47 +61,17 @@ const LoginPage = () => {
     <div className="login-container">
       <div className="login-card">
         <h2 className="login-heading">
-          Liskan Academy <br /> Login
+          Liskan Academy <br /> Super Admin Login
         </h2>
         {error && <p className="login-error">{error}</p>}
         <form onSubmit={handleSubmit}>
-          {/* Role selector */}
           <div className="form-group">
-            <label htmlFor="role" className="form-label">Role:</label>
-            <select
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="form-select"
-            >
-              <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
-              <option value="admin">Admin</option>
-              
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="identifier" className="form-label">
-              {role === "student" ? "Admission Number:" : "Email:"}
-            </label>
+            <label htmlFor="email" className="form-label">Email:</label>
             <input
-              id="identifier"
-              type={role === "student" ? "text" : "email"}
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              className="form-input"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="schoolCode" className="form-label">School Code :</label>
-            <input
-              id="schoolCode"
-              type="text"
-              value={schoolCode}
-              onChange={(e) => setSchoolCode(e.target.value)}
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="form-input"
               required
             />
@@ -127,7 +94,7 @@ const LoginPage = () => {
             className="login-button"
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Logging in..." : "Login as Super Admin"}
           </button>
         </form>
         {loading && <p className="login-loading">Please wait...</p>}
@@ -136,4 +103,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SuperAdminLoginPage;

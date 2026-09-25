@@ -9,6 +9,7 @@ import SuperAdminLayout from "./layouts/SuperAdminLayout";
 
 // Pages
 import LoginPage from "./pages/LoginPage";
+import SuperAdminLoginPage from "./pages/SuperAdminLoginPage";
 import SuperAdminDashboard from "./pages/SuperAdminDashboard";
 import Profile from "./pages/Profile";
 import Quizzes from "./pages/Quizzes";
@@ -41,6 +42,7 @@ function App() {
           {/* Public routes */}
           <Route path="/" element={<LoginPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/superadmin/login" element={<SuperAdminLoginPage />} />
 
           {/* Student routes */}
           <Route path="/student" element={<StudentLayout />}>
