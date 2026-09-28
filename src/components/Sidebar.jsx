@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { getPhotoUrl, DEFAULT_AVATAR } from "../config";
 
 const Sidebar = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -58,13 +59,7 @@ const Sidebar = () => {
     },
   };
 
-  const API_URL = import.meta.env.VITE_API_URL;
-
-  const photoSrc = user?.photoUrl
-    ? user.photoUrl.startsWith("/uploads")
-      ? `${API_URL}${user.photoUrl}`
-      : `${API_URL}/uploads/${user.photoUrl}`
-    : "https://via.placeholder.com/100?text=Student";
+  const photoSrc = getPhotoUrl(user?.photoUrl);
 
   return (
     <div style={styles.sidebar}>
@@ -80,8 +75,8 @@ const Sidebar = () => {
             crossOrigin="anonymous"
             style={styles.avatar}
             onError={(e) => {
-              e.currentTarget.src =
-                "https://via.placeholder.com/100?text=Student";
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = DEFAULT_AVATAR;
             }}
           />
           <div style={styles.name}>{user.name}</div>

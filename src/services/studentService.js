@@ -1,10 +1,8 @@
-import axios from "axios";
-
-const API_URL = `${import.meta.env.VITE_API_URL}/api/users`;
+import api from "./api";
 
 export const getStudentProfile = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/${id}`);
+    const response = await api.get(`/users/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching student profile:", error.message);
@@ -14,7 +12,7 @@ export const getStudentProfile = async (id) => {
 
 export const updateStudentProfile = async (id, updatedData) => {
   try {
-    const response = await axios.put(`${API_URL}/${id}`, updatedData);
+    const response = await api.put(`/users/${id}`, updatedData);
     return response.data;
   } catch (error) {
     console.error("Error updating student profile:", error.message);
@@ -24,7 +22,7 @@ export const updateStudentProfile = async (id, updatedData) => {
 
 export const createStudent = async (studentData) => {
   try {
-    const response = await axios.post(API_URL, { ...studentData, role: "student" });
+    const response = await api.post("/users", { ...studentData, role: "student" });
     return response.data;
   } catch (error) {
     console.error("Error creating student:", error.message);
@@ -34,7 +32,7 @@ export const createStudent = async (studentData) => {
 
 export const getAllStudents = async () => {
   try {
-    const response = await axios.get(`${API_URL}?role=student`);
+    const response = await api.get("/users?role=student");
     return response.data;
   } catch (error) {
     console.error("Error fetching students:", error.message);

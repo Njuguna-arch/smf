@@ -2,30 +2,41 @@ import React, { useEffect, useState } from "react";
 import { getStudentProfile } from "../services/studentService";
 import { getCurrentUser } from "../services/authService";
 import { useNavigate } from "react-router-dom";
+import { getPhotoUrl, DEFAULT_AVATAR } from "../config";
 
 const Profile = () => {
-  const [student, setStudent] = useState(null);
+  const currentUser = getCurrentUser();
+  const [student, setStudent] = useState(currentUser || null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
-  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const user = getCurrentUser();
     if (user && (user._id || user.id)) {
       const userId = user._id || user.id;
       getStudentProfile(userId)
-        .then((data) => setStudent(data))
+        .then((data) => {
+          if (
+            data &&
+            typeof data === "object" &&
+            !Array.isArray(data) &&
+            (data.name || data.admissionNumber)
+          ) {
+            setStudent((prev) => ({ ...(prev || {}), ...data }));
+          }
+        })
         .catch((err) => {
           console.error("Failed to fetch student profile", err);
-          setError("Unable to load profile. Please try again later.");
+          if (!currentUser) {
+            setError("Unable to load profile. Please try again later.");
+          }
         });
     } else {
       navigate("/login");
     }
   }, [navigate]);
 
-  if (error) {
+  if (error && !student) {
     return (
       <div style={{ padding: "2rem" }}>
         <h2>Student Profile</h2>
@@ -38,21 +49,33 @@ const Profile = () => {
     return <p style={{ padding: "2rem" }}>Loading profile...</p>;
   }
 
-  // Always resolve to backend
-  const photoSrc = student.photoUrl
-    ? `${API_URL}/uploads/${student.photoUrl.replace(/^\/uploads\//, "")}`
-    : `${API_URL}/uploads/default-avatar.png`;
+  const displayName = student.name || currentUser?.name || "Student";
+  const displayAdmission = student.admissionNumber || currentUser?.admissionNumber || "N/A";
+  const displayGrade = student.grade || currentUser?.grade || "N/A";
+  const displayEmail = student.email || currentUser?.email || "N/A";
+  const displayGender = student.gender || currentUser?.gender || "N/A";
+  const displayDob = student.dateOfBirth || currentUser?.dateOfBirth;
+  const displayTeacher = student.classTeacher || currentUser?.classTeacher || "N/A";
+
+  const photoSrc = getPhotoUrl(student.photoUrl || currentUser?.photoUrl);
 
   return (
     <div style={{ padding: "2rem" }}>
       <div style={{ textAlign: "center", marginBottom: "2rem" }}>
         <marquee behavior="" direction="left" scrollamount="8">
-          <h1 style={{ margin: 0, fontSize: "2rem", color: "#0a0a0b", backgroundColor: "#e8e113" }}>
-            Liskan Academy Primary and Junior School, MOTTO: Hard Work Pays                                            
+          <h1
+            style={{
+              margin: 0,
+              fontSize: "2rem",
+              color: "#0a0a0b",
+              backgroundColor: "#e8e113",
+            }}
+          >
+            Liskan Academy Primary and Junior School, MOTTO: Hard Work Pays
           </h1>
         </marquee>
         <h2 style={{ margin: "0.5rem 0", color: "#34495e" }}>
-          Welcome, {student.name || "Student"}
+          Welcome, {displayName}
         </h2>
       </div>
 
@@ -77,7 +100,7 @@ const Profile = () => {
           <h3>User Profile</h3>
           <img
             src={photoSrc}
-            alt={student.name || "Student Photo"}
+            alt={displayName}
             crossOrigin="anonymous"
             style={{
               width: "220px",
@@ -88,13 +111,14 @@ const Profile = () => {
               marginBottom: "1rem",
             }}
             onError={(e) => {
-              e.currentTarget.src = `${API_URL}/uploads/default-avatar.png`;
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = DEFAULT_AVATAR;
             }}
           />
           <p>
-            <strong>{student.admissionNumber || "N/A"}</strong>
+            <strong>{displayAdmission}</strong>
           </p>
-          <p>Grade: {student.grade || "N/A"}</p>
+          <p>Grade: {displayGrade}</p>
         </div>
 
         <div
@@ -107,18 +131,28 @@ const Profile = () => {
           }}
         >
           <h3>Personal Information</h3>
-          <p><strong>Name:</strong> {student.name || "N/A"}</p>
-          <p><strong>Admission No:</strong> {student.admissionNumber || "N/A"}</p>
-          <p><strong>Email:</strong> {student.email || "N/A"}</p>
-          <p><strong>Grade:</strong> {student.grade || "N/A"}</p>
-          <p><strong>Gender:</strong> {student.gender || "N/A"}</p>
+          <p>
+            <strong>Name:</strong> {displayName}
+          </p>
+          <p>
+            <strong>Admission No:</strong> {displayAdmission}
+          </p>
+          <p>
+            <strong>Email:</strong> {displayEmail}
+          </p>
+          <p>
+            <strong>Grade:</strong> {displayGrade}
+          </p>
+          <p>
+            <strong>Gender:</strong> {displayGender}
+          </p>
           <p>
             <strong>Date of Birth:</strong>{" "}
-            {student.dateOfBirth
-              ? new Date(student.dateOfBirth).toLocaleDateString()
-              : "N/A"}
+            {displayDob ? new Date(displayDob).toLocaleDateString() : "N/A"}
           </p>
-          <p><strong>Class Teacher:</strong> {student.classTeacher || "N/A"}</p>
+          <p>
+            <strong>Class Teacher:</strong> {displayTeacher}
+          </p>
         </div>
       </div>
     </div>

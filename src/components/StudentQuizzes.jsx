@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 const StudentQuizzes = ({ studentId }) => {
   const [quizzes, setQuizzes] = useState([]);
@@ -8,11 +8,7 @@ const StudentQuizzes = ({ studentId }) => {
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/teacher/${studentId}/completed-quizzes`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const res = await api.get(`/teacher/${studentId}/completed-quizzes`);
         setQuizzes(res.data);
       } catch (err) {
         console.error("Error fetching completed quizzes:", err);

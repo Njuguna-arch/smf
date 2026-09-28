@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 import { fetchStudentResults } from "../services/examService";
 import { getCurrentUser } from "../services/authService";
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 const gradeColor = (grade) => {
   switch (grade) {
@@ -95,11 +93,8 @@ const filteredResults = results.filter(
 
   const handleDownloadPDF = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const url = `${API_URL}/api/debug/student-report`;
-
-      const response = await axios.post(
-        url,
+      const response = await api.post(
+        "/debug/student-report",
         {
           name: exam.studentId?.name || "Student",
           admission: exam.admissionNumber,
@@ -116,7 +111,6 @@ const filteredResults = results.filter(
         },
         {
           responseType: "blob",
-          headers: { Authorization: `Bearer ${token}` },
         }
       );
 

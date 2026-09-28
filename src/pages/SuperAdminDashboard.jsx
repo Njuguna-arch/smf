@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import api from "../services/api";
 
 const SuperAdminDashboard = () => {
   const [schools, setSchools] = useState([]);
@@ -11,10 +9,7 @@ const SuperAdminDashboard = () => {
 
   const fetchSchools = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get(`${API_URL}/api/superadmin/schools`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get("/superadmin/schools");
       setSchools(res.data);
     } catch (err) {
       console.error("Failed to fetch schools", err);
@@ -28,11 +23,7 @@ const SuperAdminDashboard = () => {
   const handleAddSchool = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
-      const res = await axios.post(`${API_URL}/api/superadmin/schools`, 
-        { name, code, address },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.post("/superadmin/schools", { name, code, address });
       setSchools([...schools, res.data]);
       setName("");
       setCode("");
@@ -47,10 +38,7 @@ const SuperAdminDashboard = () => {
   const handleRemoveSchool = async (schoolCode) => {
     if (!window.confirm(`Are you sure you want to remove school ${schoolCode}? This deletes associated users too.`)) return;
     try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`${API_URL}/api/superadmin/schools/${schoolCode}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/superadmin/schools/${schoolCode}`);
       setSchools(schools.filter(s => s.code !== schoolCode));
       alert("School removed");
     } catch (err) {

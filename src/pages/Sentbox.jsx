@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import api from "../services/api";
 
 const Sentbox = () => {
   const [messages, setMessages] = useState([]);
@@ -13,10 +11,7 @@ const Sentbox = () => {
 
   const fetchMessages = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get(`${API_URL}/api/admin/messages`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get("/admin/messages");
       setMessages(res.data);
     } catch (err) {
       console.error("Failed to fetch messages", err);
@@ -49,10 +44,7 @@ const Sentbox = () => {
         formData.append("file", bulkContactsFile);
       }
 
-      const token = localStorage.getItem("token");
-      const res = await axios.post(`${API_URL}/api/admin/messages/bulk`, formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.post("/admin/messages/bulk", formData);
       
       if (res.data.sentMessage) {
         setMessages([res.data.sentMessage, ...messages]);

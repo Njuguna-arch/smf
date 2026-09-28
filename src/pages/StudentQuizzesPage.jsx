@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 import StudentSelector from "../components/StudentSelector.jsx";
 
 const StudentQuizzesPage = () => {
@@ -11,11 +11,7 @@ const StudentQuizzesPage = () => {
     if (!id) return;
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/teacher/${id}/completed-quizzes`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.get(`/teacher/${id}/completed-quizzes`);
       setQuizzes(res.data);
     } catch (err) {
       console.error("Error fetching completed quizzes:", err);
