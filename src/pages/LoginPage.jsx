@@ -64,7 +64,7 @@ const LoginPage = () => {
     <div className="login-container">
       <div className="login-card">
         <h2 className="login-heading">
-          Liskan Academy <br /> Login
+          EduSphere <br /> Login
         </h2>
         {error && <p className="login-error">{error}</p>}
         <form onSubmit={handleSubmit}>
