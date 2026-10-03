@@ -41,6 +41,7 @@ const LoginPage = () => {
         grade: normalizedUser.grade,
         photoUrl: normalizedUser.photoUrl,
         admissionNumber: normalizedUser.admissionNumber,
+        schoolCode: normalizedUser.schoolCode,
       };
 
       loginUser(userToStore, data.token);

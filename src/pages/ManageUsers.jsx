@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { addUser, deleteUser, fetchUsers, assignPhoto  } from "../services/adminService";
+import { UserContext } from "../context/UserContext";
 import "./ManageUsers.css"; 
 
 const ManageUsers = () => {
+  const { user } = useContext(UserContext);
   const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState({
     name: "",
@@ -30,6 +32,7 @@ const ManageUsers = () => {
         ...newUser,
         role: newUser.role.toLowerCase(),
         email: newUser.email.trim().toLowerCase(),
+        schoolCode: user?.schoolCode || undefined,
         admissionNumber:
           newUser.role === "student"
             ? newUser.admissionNumber.trim().toUpperCase()
@@ -91,7 +94,14 @@ const ManageUsers = () => {
 
   return (
     <div className="manage-container">
-      <h2>Manage Users</h2>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+        <h2>Manage Users</h2>
+        {user?.schoolCode && (
+          <span style={{ fontSize: "14px", fontWeight: "bold", color: "#2e7d32", background: "#e8f5e9", padding: "6px 14px", borderRadius: "16px", border: "1px solid #c8e6c9" }}>
+            School: {user.schoolCode}
+          </span>
+        )}
+      </div>
 
       {/* Add User Form */}
       <div className="form-row">
