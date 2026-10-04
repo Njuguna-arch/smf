@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { fetchClassPerformance } from "../services/teacherService";
+import { UserContext } from "../context/UserContext";
 import {
   Box,
   Typography,
@@ -13,6 +14,8 @@ import {
   Select,
   MenuItem,
   Button,
+  Chip,
+  Alert,
 } from "@mui/material";
 
 const getPointsFromGrade = (grade) => {
@@ -41,6 +44,8 @@ const getCBEGrade = (marks) => {
 };
 
 const TeacherDashboard = () => {
+  const { user } = useContext(UserContext);
+
   const [performance, setPerformance] = useState([]);
   const [totalScore, setTotalScore] = useState(0);
   const [meanScore, setMeanScore] = useState(0);
@@ -51,22 +56,37 @@ const TeacherDashboard = () => {
   const [examType, setExamType] = useState("Mid-Term");
   const [term, setTerm] = useState("Term 1");
   const [year, setYear] = useState(2026);
+  const defaultClass =
+    user?.classTeacher && user.classTeacher !== "null"
+      ? user.classTeacher
+      : user?.grade
+      ? `Grade ${user.grade.replace(/^Grade\s*/i, "")}`
+      : "Grade 4";
+  const [selectedClass, setSelectedClass] = useState(defaultClass);
 
-  const loadPerformance = async (type, termValue, yearValue) => {
+  const loadPerformance = async (type, termValue, yearValue, classValue) => {
     setLoading(true);
     setError("");
     try {
-      const data = await fetchClassPerformance(type, termValue, yearValue);
+      const data = await fetchClassPerformance(type, termValue, yearValue, classValue);
       setPerformance(Array.isArray(data.performance) ? data.performance : []);
       setTotalScore(data.totalScore || 0);
       setMeanScore(data.meanScore || 0);
     } catch (err) {
       console.error(err);
-      setError("Failed to load class performance");
+      const errMsg =
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to load class performance";
+      setError(errMsg);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadPerformance(examType, term, year, selectedClass);
+  }, []);
 
   // Compute grade + points for class mean
   const meanGrade = getCBEGrade(meanScore);
@@ -74,24 +94,55 @@ const TeacherDashboard = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom color="primary">
+      <Typography variant="h4" gutterBottom color="primary" sx={{ fontWeight: "bold" }}>
         Liskan Academy — Teacher Dashboard
       </Typography>
 
-      <Paper elevation={3} sx={{ p: 2 }}>
-        <Typography variant="h6" gutterBottom>
-          Class Performance
-        </Typography>
+      <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            Class Performance — {selectedClass}
+          </Typography>
+          {user?.classTeacher && user.classTeacher !== "null" && (
+            <Chip
+              label={`Assigned Class: ${user.classTeacher}`}
+              color="primary"
+              variant="outlined"
+              size="small"
+            />
+          )}
+        </Box>
 
-        <Box sx={{ mb: 2, display: "flex", gap: 3, alignItems: "center" }}>
+        <Box sx={{ mb: 3, display: "flex", gap: 2, flexWrap: "wrap", alignItems: "center" }}>
           <Box>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+            <Typography variant="body2" sx={{ fontWeight: "bold", mb: 0.5 }}>
+              Class / Grade:
+            </Typography>
+            <Select
+              value={selectedClass}
+              onChange={(e) => setSelectedClass(e.target.value)}
+              size="small"
+              sx={{ minWidth: 140 }}
+            >
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((g) => (
+                <MenuItem key={g} value={`Grade ${g}`}>
+                  Grade {g}
+                </MenuItem>
+              ))}
+              <MenuItem value="Grade 4k">Grade 4k</MenuItem>
+              <MenuItem value="Grade 4G">Grade 4G</MenuItem>
+            </Select>
+          </Box>
+
+          <Box>
+            <Typography variant="body2" sx={{ fontWeight: "bold", mb: 0.5 }}>
               Exam Type:
             </Typography>
             <Select
               value={examType}
               onChange={(e) => setExamType(e.target.value)}
-              sx={{ minWidth: 150 }}
+              size="small"
+              sx={{ minWidth: 140 }}
             >
               <MenuItem value="Opener">Opener</MenuItem>
               <MenuItem value="Mid-Term">Mid-Term</MenuItem>
@@ -100,13 +151,14 @@ const TeacherDashboard = () => {
           </Box>
 
           <Box>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+            <Typography variant="body2" sx={{ fontWeight: "bold", mb: 0.5 }}>
               Term:
             </Typography>
             <Select
               value={term}
               onChange={(e) => setTerm(e.target.value)}
-              sx={{ minWidth: 150 }}
+              size="small"
+              sx={{ minWidth: 140 }}
             >
               <MenuItem value="Term 1">Term 1</MenuItem>
               <MenuItem value="Term 2">Term 2</MenuItem>
@@ -115,43 +167,48 @@ const TeacherDashboard = () => {
           </Box>
 
           <Box>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+            <Typography variant="body2" sx={{ fontWeight: "bold", mb: 0.5 }}>
               Year:
             </Typography>
             <Select
               value={year}
               onChange={(e) => setYear(Number(e.target.value))}
-              sx={{ minWidth: 150 }}
+              size="small"
+              sx={{ minWidth: 120 }}
             >
               <MenuItem value={2025}>2025</MenuItem>
               <MenuItem value={2026}>2026</MenuItem>
               <MenuItem value={2027}>2027</MenuItem>
+              <MenuItem value={2028}>2028</MenuItem>
             </Select>
           </Box>
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => loadPerformance(examType, term, year)}
-          >
-            Search
-          </Button>
+          <Box sx={{ alignSelf: "flex-end" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => loadPerformance(examType, term, year, selectedClass)}
+              sx={{ height: 40 }}
+            >
+              Search
+            </Button>
+          </Box>
         </Box>
 
         {loading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
+          <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
             <CircularProgress />
           </Box>
         ) : error ? (
-          <Typography color="error">{error}</Typography>
+          <Alert severity="error" sx={{ my: 2 }}>{error}</Alert>
         ) : (
-          <Table>
+          <Table sx={{ border: "1px solid #e0e0e0" }}>
             <TableHead>
-              <TableRow>
+              <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
                 <TableCell><strong>Subject</strong></TableCell>
                 <TableCell><strong>Average Score</strong></TableCell>
                 <TableCell><strong>Grade</strong></TableCell>
-                <TableCell><strong>Lubrics</strong></TableCell>
+                <TableCell><strong>Rubrics / Points</strong></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -160,29 +217,43 @@ const TeacherDashboard = () => {
                   const grade = getCBEGrade(Number(p.average));
                   const points = getPointsFromGrade(grade);
                   return (
-                    <TableRow key={p.subject}>
+                    <TableRow key={p.subject} hover>
                       <TableCell>{p.subject}</TableCell>
-                      <TableCell>{Number(p.average).toFixed(2)}</TableCell>
-                      <TableCell>{grade}</TableCell>
+                      <TableCell>{Number(p.average || 0).toFixed(2)}</TableCell>
+                      <TableCell>
+                        <Chip
+                          label={grade}
+                          size="small"
+                          color={points >= 6 ? "success" : points >= 4 ? "primary" : "warning"}
+                        />
+                      </TableCell>
                       <TableCell>{points}</TableCell>
                     </TableRow>
                   );
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4}>No exam results available</TableCell>
+                  <TableCell colSpan={4} align="center" sx={{ py: 3, color: "text.secondary" }}>
+                    No exam results found for {selectedClass} ({examType}, {term} {year})
+                  </TableCell>
                 </TableRow>
               )}
-              <TableRow>
+              <TableRow sx={{ backgroundColor: "#fafafa" }}>
                 <TableCell><strong>Class Total Marks</strong></TableCell>
-                <TableCell>{totalScore.toFixed(2)}</TableCell>
+                <TableCell><strong>{(totalScore || 0).toFixed(2)}</strong></TableCell>
                 <TableCell colSpan={2}></TableCell>
               </TableRow>
-              <TableRow>
+              <TableRow sx={{ backgroundColor: "#fafafa" }}>
                 <TableCell><strong>Class Mean</strong></TableCell>
-                <TableCell>{meanScore.toFixed(2)}</TableCell>
-                <TableCell>{meanGrade}</TableCell>
-                <TableCell>{meanPoints}</TableCell>
+                <TableCell><strong>{(meanScore || 0).toFixed(2)}</strong></TableCell>
+                <TableCell>
+                  <Chip
+                    label={meanGrade}
+                    size="small"
+                    color={meanPoints >= 6 ? "success" : meanPoints >= 4 ? "primary" : "warning"}
+                  />
+                </TableCell>
+                <TableCell><strong>{meanPoints}</strong></TableCell>
               </TableRow>
             </TableBody>
           </Table>

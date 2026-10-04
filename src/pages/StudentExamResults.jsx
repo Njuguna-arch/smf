@@ -50,126 +50,166 @@ const generateClientPDF = (exam) => {
   // Colors
   const primaryColor = [46, 125, 50]; // #2e7d32
   const darkColor = [38, 50, 56]; // #263238
-  const lightBg = [244, 246, 248];
+  const lightBg = [248, 250, 248];
+  const gridBorderColor = [180, 195, 185];
 
-  // Header Banner
+  // Top Header Banner
   doc.setFillColor(...primaryColor);
-  doc.rect(14, 12, 182, 22, "F");
+  doc.rect(14, 10, 182, 26, "F");
 
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
-  doc.text("EDUSPHERE ACADEMY", 105, 21, { align: "center" });
+  doc.setFontSize(15);
+  doc.text("EDUSPHERE ACADEMY", 105, 17, { align: "center" });
+
+  // Student Name in the middle of the header
+  doc.setFontSize(11.5);
+  doc.text(`STUDENT: ${studentName.toUpperCase()}`, 105, 24, { align: "center" });
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  doc.text("OFFICIAL STUDENT EXAM REPORT CARD", 105, 28, { align: "center" });
+  doc.setFontSize(8.5);
+  doc.text(`OFFICIAL EXAM REPORT CARD — ${examPeriod.toUpperCase()}`, 105, 31, { align: "center" });
 
   // Student Info Card
   doc.setDrawColor(207, 216, 220);
   doc.setFillColor(255, 255, 255);
-  doc.roundedRect(14, 38, 182, 28, 2, 2, "FD");
+  doc.roundedRect(14, 39, 182, 27, 2, 2, "FD");
 
   doc.setTextColor(...darkColor);
-  doc.setFontSize(9.5);
+  doc.setFontSize(9);
 
   // Left column
   doc.setFont("helvetica", "bold");
-  doc.text("Student Name:", 18, 45);
+  doc.text("Student Name:", 18, 46);
   doc.setFont("helvetica", "normal");
-  doc.text(studentName, 52, 45);
+  doc.text(studentName, 50, 46);
 
   doc.setFont("helvetica", "bold");
-  doc.text("Admission No:", 18, 53);
+  doc.text("Admission No:", 18, 53.5);
   doc.setFont("helvetica", "normal");
-  doc.text(admNo, 52, 53);
+  doc.text(admNo, 50, 53.5);
 
   doc.setFont("helvetica", "bold");
   doc.text("Exam Period:", 18, 61);
   doc.setFont("helvetica", "normal");
-  doc.text(examPeriod, 52, 61);
+  doc.text(examPeriod, 50, 61);
 
   // Right column
   doc.setFont("helvetica", "bold");
-  doc.text("Overall Grade:", 115, 45);
+  doc.text("Overall Grade:", 115, 46);
   doc.setTextColor(...primaryColor);
-  doc.text(overallGrade, 148, 45);
+  doc.setFont("helvetica", "bold");
+  doc.text(overallGrade, 148, 46);
 
   doc.setTextColor(...darkColor);
   doc.setFont("helvetica", "bold");
-  doc.text("Position / Rank:", 115, 53);
+  doc.text("Position / Rank:", 115, 53.5);
   doc.setFont("helvetica", "normal");
-  doc.text(position, 148, 53);
+  doc.text(position, 148, 53.5);
 
   doc.setFont("helvetica", "bold");
   doc.text("Date Issued:", 115, 61);
   doc.setFont("helvetica", "normal");
   doc.text(new Date().toLocaleDateString("en-GB"), 148, 61);
 
-  // Table Header
-  const tableY = 72;
+  // Table Structure with full borders like a table
+  const tableY = 70;
+  const col1W = 66; // Subject: 14 to 80
+  const col2W = 38; // Marks: 80 to 118
+  const col3W = 38; // Grade: 118 to 156
+  const col4W = 40; // Points: 156 to 196
+  const rowH = 7.5;
+
+  // Table Header in green
   doc.setFillColor(...primaryColor);
-  doc.rect(14, tableY, 182, 8, "F");
+  doc.setDrawColor(...primaryColor);
+  doc.rect(14, tableY, 182, 8.5, "FD");
+
+  // Vertical dividers in header
+  doc.setDrawColor(255, 255, 255);
+  doc.setLineWidth(0.4);
+  doc.line(80, tableY, 80, tableY + 8.5);
+  doc.line(118, tableY, 118, tableY + 8.5);
+  doc.line(156, tableY, 156, tableY + 8.5);
 
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
-  doc.text("SUBJECT", 20, tableY + 5.5);
-  doc.text("MARKS (%)", 90, tableY + 5.5, { align: "center" });
-  doc.text("GRADE", 130, tableY + 5.5, { align: "center" });
-  doc.text("RUBRICS / POINTS", 170, tableY + 5.5, { align: "center" });
+  doc.text("SUBJECT", 47, tableY + 5.5, { align: "center" });
+  doc.text("MARKS (%)", 99, tableY + 5.5, { align: "center" });
+  doc.text("GRADE", 137, tableY + 5.5, { align: "center" });
+  doc.text("RUBRICS / POINTS", 176, tableY + 5.5, { align: "center" });
 
-  let curY = tableY + 8;
+  let curY = tableY + 8.5;
   let totalMarks = 0;
   let count = 0;
 
+  // Table Rows with complete grid borders
   subjects.forEach((subj, idx) => {
     const isEven = idx % 2 === 0;
     doc.setFillColor(isEven ? 255 : lightBg[0], isEven ? 255 : lightBg[1], isEven ? 255 : lightBg[2]);
-    doc.rect(14, curY, 182, 7.5, "F");
+    doc.setDrawColor(...gridBorderColor);
+    doc.setLineWidth(0.3);
 
-    doc.setDrawColor(220, 224, 226);
-    doc.line(14, curY + 7.5, 196, curY + 7.5);
+    // Row rectangle (fills background and draws cell border)
+    doc.rect(14, curY, 182, rowH, "FD");
 
+    // Vertical column borders
+    doc.line(80, curY, 80, curY + rowH);
+    doc.line(118, curY, 118, curY + rowH);
+    doc.line(156, curY, 156, curY + rowH);
+
+    // Cell Texts
     doc.setTextColor(...darkColor);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
-    doc.text(subj.subjectName || "Subject", 20, curY + 5);
+    doc.text(subj.subjectName || "Subject", 18, curY + 5);
 
     const m = Number(subj.marks);
     if (!isNaN(m)) {
       totalMarks += m;
       count++;
-      doc.text(String(m), 90, curY + 5, { align: "center" });
+      doc.text(String(m), 99, curY + 5, { align: "center" });
     } else {
-      doc.text("-", 90, curY + 5, { align: "center" });
+      doc.text("-", 99, curY + 5, { align: "center" });
     }
 
     doc.setFont("helvetica", "bold");
-    doc.text(subj.grade || "-", 130, curY + 5, { align: "center" });
+    doc.text(subj.grade || "-", 137, curY + 5, { align: "center" });
 
     doc.setFont("helvetica", "normal");
     const points = subj.points ?? getPointsFromGrade(subj.grade);
-    doc.text(String(points), 170, curY + 5, { align: "center" });
+    doc.text(String(points), 176, curY + 5, { align: "center" });
 
-    curY += 7.5;
+    curY += rowH;
   });
 
-  // Summary Row
+  // Summary Row with complete borders
   doc.setFillColor(232, 245, 233);
-  doc.rect(14, curY, 182, 8, "F");
-  doc.setDrawColor(200, 230, 201);
-  doc.line(14, curY + 8, 196, curY + 8);
+  doc.setDrawColor(...gridBorderColor);
+  doc.setLineWidth(0.3);
+  doc.rect(14, curY, 182, 8.5, "FD");
+
+  // Vertical dividers in summary row
+  doc.line(80, curY, 80, curY + 8.5);
+  doc.line(118, curY, 118, curY + 8.5);
+  doc.line(156, curY, 156, curY + 8.5);
 
   doc.setTextColor(...primaryColor);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
-  doc.text("TOTAL / AVERAGE:", 20, curY + 5.5);
+  doc.text("TOTAL / AVERAGE:", 47, curY + 5.5, { align: "center" });
   const avg = count > 0 ? (totalMarks / count).toFixed(1) : "N/A";
-  doc.text(`${totalMarks}  (Avg: ${avg}%)`, 90, curY + 5.5, { align: "center" });
-  doc.text(`Overall: ${overallGrade}`, 170, curY + 5.5, { align: "center" });
+  doc.text(`${totalMarks}  (Avg: ${avg}%)`, 99, curY + 5.5, { align: "center" });
+  doc.text(`Overall: ${overallGrade}`, 137, curY + 5.5, { align: "center" });
+  doc.text("-", 176, curY + 5.5, { align: "center" });
 
-  curY += 13;
+  // Outer border around the entire table
+  doc.setDrawColor(...primaryColor);
+  doc.setLineWidth(0.6);
+  doc.rect(14, tableY, 182, curY + 8.5 - tableY, "D");
+
+  curY += 13.5;
 
   // Teacher's remark box
   doc.setFillColor(241, 248, 233);
@@ -186,11 +226,12 @@ const generateClientPDF = (exam) => {
   doc.setFontSize(8.5);
   doc.text(`"${comment}"`, 18, curY + 11);
 
-  curY += 25;
+  curY += 24;
 
   // Signatures
-  const sigY = Math.max(curY, 240);
+  const sigY = Math.max(curY, 242);
   doc.setDrawColor(160, 160, 160);
+  doc.setLineWidth(0.4);
   doc.line(20, sigY, 75, sigY);
   doc.line(135, sigY, 190, sigY);
 

@@ -52,15 +52,7 @@ export const fetchSubjects = async () => {
 // Add a new quiz
 export const addQuiz = async (quizData) => {
   try {
-    const isFormData = quizData instanceof FormData;
-
-    const res = await api.post("/quizzes", quizData, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        ...(isFormData ? { "Content-Type": "multipart/form-data" } : {}),
-      },
-    });
-
+    const res = await api.post("/quizzes", quizData);
     return res.data;
   } catch (err) {
     console.error("Failed to add quiz:", err.message);

@@ -31,15 +31,15 @@ export const addDisciplineComment = async (data) => {
   }
 };
 
-export const fetchClassPerformance = async (examType, term, year) => {
+export const fetchClassPerformance = async (examType, term, year, className) => {
   try {
-    let query = "";
-    if (examType) query += `examType=${encodeURIComponent(examType)}`;
-    if (term) query += `${query ? "&" : ""}term=${encodeURIComponent(term)}`;
-    if (year) query += `${query ? "&" : ""}year=${encodeURIComponent(year)}`;
+    const params = new URLSearchParams();
+    if (examType) params.append("examType", examType);
+    if (term) params.append("term", term);
+    if (year) params.append("year", year);
+    if (className) params.append("className", className);
 
-    // ✅ Only /teacher/performance because baseURL already has /api
-    const url = `/teacher/performance?${query}`;
+    const url = `/teacher/performance${params.toString() ? `?${params.toString()}` : ""}`;
     console.log("🌐 Fetching class performance from URL:", url);
 
     const res = await api.get(url);
@@ -51,10 +51,15 @@ export const fetchClassPerformance = async (examType, term, year) => {
   }
 };
 
-export const fetchStudentCompletedQuizzes = async (studentId) => {
+export const fetchStudentCompletedQuizzes = async (studentId, subject) => {
   try {
-    console.log("📚 Fetching completed quizzes for student:", studentId);
-    const res = await api.get(`/teacher/${studentId}/completed-quizzes`, {
+    console.log("📚 Fetching completed quizzes for student:", studentId, "subject:", subject);
+    const params = new URLSearchParams();
+    if (subject && subject.toLowerCase() !== "all") {
+      params.append("subject", subject);
+    }
+    const query = params.toString() ? `?${params.toString()}` : "";
+    const res = await api.get(`/teacher/${studentId}/completed-quizzes${query}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     console.log("✅ Completed quizzes response:", res.data);

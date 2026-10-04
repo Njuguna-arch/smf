@@ -83,7 +83,12 @@ const AddQuizForm = () => {
       setQuizType("mcq");
     } catch (err) {
       console.error(err);
-      setMessage("Failed to add quiz");
+      const errMsg =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        err.message ||
+        "Failed to add quiz";
+      setMessage(errMsg);
       setOpen(true);
     }
   };
