@@ -3,7 +3,7 @@ import api from "../services/api";
 
 const Sentbox = () => {
   const [messages, setMessages] = useState([]);
-  const [bulkChannel, setBulkChannel] = useState("whatsapp");
+  const [bulkChannel, setBulkChannel] = useState("sms");
   const [bulkMessage, setBulkMessage] = useState("");
   const [bulkContactsFile, setBulkContactsFile] = useState(null);
   const [bulkPastedContacts, setBulkPastedContacts] = useState("");
@@ -46,16 +46,21 @@ const Sentbox = () => {
 
       const res = await api.post("/admin/messages/bulk", formData);
       
-      if (res.data.sentMessage) {
+      if (res.data?.sentMessage) {
         setMessages([res.data.sentMessage, ...messages]);
       }
-      alert(`Successfully sent ${res.data.sentCount || 0} messages.`);
+      alert(`Successfully sent ${res.data?.sentCount || 0} messages.`);
       setBulkMessage("");
       setBulkPastedContacts("");
       setBulkContactsFile(null);
     } catch (err) {
       console.error("Failed to send bulk message", err);
-      alert("Failed to send bulk message. See console for details.");
+      const errMsg =
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to send bulk message. See console for details.";
+      alert(`Failed to send bulk message: ${errMsg}`);
     } finally {
       setIsSendingBulk(false);
     }
@@ -70,29 +75,31 @@ const Sentbox = () => {
           <div style={{ flex: "1 1 45%", minWidth: "300px" }}>
             <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
               <button
+                type="button"
                 onClick={() => setBulkChannel("whatsapp")}
                 style={{
                   padding: "8px 24px",
                   borderRadius: "20px",
-                  border: "1px solid #333",
-                  backgroundColor: bulkChannel === "whatsapp" ? "#f0f0f0" : "#fff",
+                  border: bulkChannel === "whatsapp" ? "2px solid #2e7d32" : "1px solid #999",
+                  backgroundColor: bulkChannel === "whatsapp" ? "#2e7d32" : "#fff",
+                  color: bulkChannel === "whatsapp" ? "#fff" : "#000",
                   cursor: "pointer",
-                  fontWeight: bulkChannel === "whatsapp" ? "bold" : "normal",
-                  color: "#000"
+                  fontWeight: bulkChannel === "whatsapp" ? "bold" : "normal"
                 }}
               >
                 Whatsapp
               </button>
               <button
+                type="button"
                 onClick={() => setBulkChannel("sms")}
                 style={{
                   padding: "8px 24px",
                   borderRadius: "20px",
-                  border: "1px solid #333",
-                  backgroundColor: bulkChannel === "sms" ? "#f0f0f0" : "#fff",
+                  border: bulkChannel === "sms" ? "2px solid #2e7d32" : "1px solid #999",
+                  backgroundColor: bulkChannel === "sms" ? "#2e7d32" : "#fff",
+                  color: bulkChannel === "sms" ? "#fff" : "#000",
                   cursor: "pointer",
-                  fontWeight: bulkChannel === "sms" ? "bold" : "normal",
-                  color: "#000"
+                  fontWeight: bulkChannel === "sms" ? "bold" : "normal"
                 }}
               >
                 SMS
