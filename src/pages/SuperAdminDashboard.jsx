@@ -185,7 +185,7 @@ const SuperAdminDashboard = () => {
   const handleRemoveSchool = async (schoolCode) => {
     if (
       !window.confirm(
-        `⚠️ DANGER: Are you sure you want to remove school ${schoolCode}? This will PERMANENTLY DELETE all associated pupils, teachers, and school admin accounts.`
+        `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert preview-icon"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> DANGER: Are you sure you want to remove school ${schoolCode}? This will PERMANENTLY DELETE all associated pupils, teachers, and school admin accounts.`
       )
     )
       return;
@@ -287,7 +287,7 @@ const SuperAdminDashboard = () => {
             gap: "8px",
           }}
         >
-          <span>➕</span> Add School & Admin
+          <span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus preview-icon"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span> Add School & Admin
         </button>
       </div>
 
@@ -320,10 +320,10 @@ const SuperAdminDashboard = () => {
         }}
       >
         {[
-          { id: "overview", label: "📊 Overview & Stats" },
-          { id: "schools", label: `🏫 Schools Management (${schools.length})` },
-          { id: "logs", label: "📜 System Audit Logs" },
-          { id: "settings", label: "⚙️ System Settings" },
+          { id: "overview", label: " Overview & Stats" },
+          { id: "schools", label: ` Schools Management (${schools.length})` },
+          { id: "logs", label: " System Audit Logs" },
+          { id: "settings", label: " System Settings" },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -421,25 +421,25 @@ const SuperAdminDashboard = () => {
                   onClick={() => setShowAddModal(true)}
                   style={actionBtnStyle("#2e7d32")}
                 >
-                  ➕ Register New School with Admin
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus preview-icon"><path d="M5 12h14"/><path d="M12 5v14"/></svg> Register New School with Admin
                 </button>
                 <button
                   onClick={() => setActiveTab("schools")}
                   style={actionBtnStyle("#1976d2")}
                 >
-                  🏫 View & Manage Schools List ({schools.length})
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-school preview-icon"><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M18 4.933V21"/><path d="m4 6 7.106-3.79a2 2 0 0 1 1.788 0L20 6"/><path d="m6 11-3.52 2.147a1 1 0 0 0-.48.854V19a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a1 1 0 0 0-.48-.853L18 11"/><path d="M6 4.933V21"/><circle cx="12" cy="9" r="2"/></svg> View & Manage Schools List ({schools.length})
                 </button>
                 <button
                   onClick={() => setActiveTab("logs")}
                   style={actionBtnStyle("#546e7a")}
                 >
-                  📜 Inspect Security & System Logs
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scroll-text preview-icon"><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></svg> Inspect Security & System Logs
                 </button>
                 <button
                   onClick={() => setActiveTab("settings")}
                   style={actionBtnStyle("#37474f")}
                 >
-                  ⚙️ Platform Settings & Maintenance
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cog preview-icon"><path d="M11 10.27 7 3.34"/><path d="m11 13.73-4 6.93"/><path d="M12 22v-2"/><path d="M12 2v2"/><path d="M14 12h8"/><path d="m17 20.66-1-1.73"/><path d="m17 3.34-1 1.73"/><path d="M2 12h2"/><path d="m20.66 17-1.73-1"/><path d="m20.66 7-1.73 1"/><path d="m3.34 17 1.73-1"/><path d="m3.34 7 1.73 1"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="8"/></svg> Platform Settings & Maintenance
                 </button>
               </div>
             </div>
@@ -447,7 +447,7 @@ const SuperAdminDashboard = () => {
             {/* Recent Audit Events */}
             <div style={sectionBoxStyle}>
               <h3 style={{ margin: "0 0 1rem 0", color: "#1f2235", fontSize: "16px" }}>
-                🕒 Recent System Events
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock preview-icon"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Recent System Events
               </h3>
               {stats?.recentLogs && stats.recentLogs.length > 0 ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -544,7 +544,7 @@ const SuperAdminDashboard = () => {
                 cursor: "pointer",
               }}
             >
-              ➕ Add School & Admin
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus preview-icon"><path d="M5 12h14"/><path d="M12 5v14"/></svg> Add School & Admin
             </button>
           </div>
 
@@ -633,7 +633,7 @@ const SuperAdminDashboard = () => {
                           color: s.status === "disabled" ? "#c62828" : "#2e7d32",
                         }}
                       >
-                        {s.status === "disabled" ? "⛔ Disabled" : "✅ Active"}
+                        {s.status === "disabled" ? " Disabled" : "✅ Active"}
                       </span>
                     </td>
 
@@ -677,7 +677,7 @@ const SuperAdminDashboard = () => {
                           }}
                           title="Reset School Admin Password"
                         >
-                          🔑 Key
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-key-square preview-icon"><path d="M12.4 2.7a2.5 2.5 0 0 1 3.4 0l5.5 5.5a2.5 2.5 0 0 1 0 3.4l-3.7 3.7a2.5 2.5 0 0 1-3.4 0L8.7 9.8a2.5 2.5 0 0 1 0-3.4z"/><path d="m14 7 3 3"/><path d="m9.4 10.6-6.814 6.814A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814"/></svg> Key
                         </button>
 
                         {/* Delete School */}
@@ -694,7 +694,7 @@ const SuperAdminDashboard = () => {
                           }}
                           title="Delete School & Associated Users"
                         >
-                          🗑️
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash preview-icon"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                         </button>
                       </div>
                     </td>
@@ -803,7 +803,7 @@ const SuperAdminDashboard = () => {
                   fontWeight: "bold",
                 }}
               >
-                🗑️ Clear Logs
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash preview-icon"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Clear Logs
               </button>
             </div>
           </div>
@@ -917,7 +917,7 @@ const SuperAdminDashboard = () => {
         <div style={{ maxWidth: "700px" }}>
           <div style={sectionBoxStyle}>
             <h3 style={{ margin: "0 0 1.2rem 0", color: "#1f2235", fontSize: "18px" }}>
-              ⚙️ System Platform Configuration
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cog preview-icon"><path d="M11 10.27 7 3.34"/><path d="m11 13.73-4 6.93"/><path d="M12 22v-2"/><path d="M12 2v2"/><path d="M14 12h8"/><path d="m17 20.66-1-1.73"/><path d="m17 3.34-1 1.73"/><path d="M2 12h2"/><path d="m20.66 17-1.73-1"/><path d="m20.66 7-1.73 1"/><path d="m3.34 17 1.73-1"/><path d="m3.34 7 1.73 1"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="8"/></svg> System Platform Configuration
             </h3>
             <form onSubmit={handleSaveSettings}>
               <div style={{ marginBottom: "1rem" }}>
@@ -1021,13 +1021,13 @@ const SuperAdminDashboard = () => {
           <div style={modalBoxStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
               <h2 style={{ margin: 0, color: "#1f2235", fontSize: "20px" }}>
-                🏫 Register New School & Provision Admin
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-school preview-icon"><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M18 4.933V21"/><path d="m4 6 7.106-3.79a2 2 0 0 1 1.788 0L20 6"/><path d="m6 11-3.52 2.147a1 1 0 0 0-.48.854V19a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a1 1 0 0 0-.48-.853L18 11"/><path d="M6 4.933V21"/><circle cx="12" cy="9" r="2"/></svg> Register New School & Provision Admin
               </h2>
               <button
                 onClick={() => setShowAddModal(false)}
                 style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer", color: "#888" }}
               >
-                ✕
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x preview-icon"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
               </button>
             </div>
 

@@ -39,8 +39,9 @@ const generateClientPDF = (exam) => {
     format: "a4",
   });
 
-  const studentName = exam.studentId?.name || "Student";
-  const admNo = exam.admissionNumber || "N/A";
+  const loggedInUser = getCurrentUser();
+  const studentName = exam.studentId?.name || loggedInUser?.name || "Student";
+  const admNo = exam.admissionNumber || loggedInUser?.admissionNumber || "N/A";
   const examPeriod = `${exam.examType || ""} ${exam.term || ""} ${exam.year || ""}`.trim();
   const overallGrade = exam.overallGrade || "N/A";
   const position = exam.position || "N/A";
@@ -60,7 +61,7 @@ const generateClientPDF = (exam) => {
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(15);
-  doc.text("EDUSPHERE ACADEMY", 105, 17, { align: "center" });
+  doc.text("LISKAN JOY ACADEMY", 105, 17, { align: "center" });
 
   // Student Name in the middle of the header
   doc.setFontSize(11.5);
@@ -68,7 +69,7 @@ const generateClientPDF = (exam) => {
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8.5);
-  doc.text(`OFFICIAL EXAM REPORT CARD — ${examPeriod.toUpperCase()}`, 105, 31, { align: "center" });
+  doc.text("OFFICIAL STUDENT EXAM REPORT CARD", 105, 31, { align: "center" });
 
   // Student Info Card
   doc.setDrawColor(207, 216, 220);
@@ -339,9 +340,10 @@ const StudentExamResults = () => {
   const exam = filteredResults.length > 0 ? filteredResults[0] : null;
 
   const printReportFallback = (examData, payloadData) => {
+    const loggedInUser = getCurrentUser();
     const p = payloadData || {
-      name: examData.studentId?.name || "Student",
-      admission: examData.admissionNumber,
+      name: examData.studentId?.name || loggedInUser?.name || "Student",
+      admission: examData.admissionNumber || loggedInUser?.admissionNumber || "N/A",
       examType: `${examData.examType} ${examData.term} ${examData.year}`,
       grade: examData.overallGrade,
       position: examData.position || "N/A",
@@ -399,7 +401,7 @@ const StudentExamResults = () => {
         </head>
         <body>
           <div class="header">
-            <h1>EDUSPHERE ACADEMY</h1>
+            <h1>LISKAN JOY ACADEMY</h1>
             <p>Official Student Examination Performance Report</p>
           </div>
           <div class="info-grid">
@@ -446,12 +448,16 @@ const StudentExamResults = () => {
     setDownloadingPdf(true);
     setDownloadSuccess("");
 
+    const studentName = exam.studentId?.name || user?.name || "Student";
+    const studentPosition = exam.position && exam.position !== "N/A" ? exam.position : "N/A";
+
     const payload = {
-      name: exam.studentId?.name || "Student",
-      admission: exam.admissionNumber,
+      name: studentName,
+      admission: exam.admissionNumber || user?.admissionNumber,
       examType: `${exam.examType} ${exam.term} ${exam.year}`,
       grade: exam.overallGrade,
-      position: exam.position || "N/A",
+      position: studentPosition,
+      schoolName: "LISKAN JOY ACADEMY",
       subjects: (exam.subjectResults || []).map((subj) => ({
         name: subj.subjectName,
         marks: subj.marks,
@@ -689,7 +695,7 @@ const StudentExamResults = () => {
         <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
           {/* Student Info */}
           <h2 style={{ textAlign: "center", color: "#2e7d32", margin: "0 0 8px 0" }}>
-            {exam.studentId?.name || "Student"}
+            {exam.studentId?.name || user?.name || "Student"}
           </h2>
           <p style={{ textAlign: "center", margin: "4px 0", color: "#555" }}>
             Admission Number: <strong>{exam.admissionNumber}</strong>
@@ -697,7 +703,7 @@ const StudentExamResults = () => {
           <p style={{ textAlign: "center", margin: "4px 0", fontWeight: "bold" }}>
             Overall Grade: <span style={{ color: gradeColor(exam.overallGrade) }}>{exam.overallGrade || "N/A"}</span>
             {exam.position && exam.position !== "N/A" && (
-              <span style={{ marginLeft: "15px", color: "#555" }}>Rank: {exam.position}</span>
+              <span style={{ marginLeft: "15px", color: "#555" }}>Position / Rank: {exam.position}</span>
             )}
           </p>
           <p style={{ textAlign: "center", margin: "4px 0", color: "#777", fontSize: "14px" }}>

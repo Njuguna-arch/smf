@@ -9,7 +9,7 @@ export const fetchStudentResults = async (admissionNumber) => {
       throw new Error("Admission number is required to fetch exam results");
     }
 
-    // Normalize admission number (strip ADM prefix, uppercase)
+    // Normalize admission number
     const normalizedAdmission = admissionNumber.trim().toUpperCase().replace(/^ADM/, "");
 
     const res = await api.get(`/exams/${normalizedAdmission}`, {
